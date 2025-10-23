@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Youtube, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -92,36 +92,31 @@ const Footer = () => {
             {/* Social Links */}
             <div className="flex gap-4">
               <a 
-                href="https://facebook.com" 
+                href="https://www.facebook.com/Cabbieo" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent flex items-center justify-center transition-all hover:scale-110"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow"
+                aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a 
-                href="https://instagram.com" 
+                href="https://www.instagram.com/cabbieollp/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent flex items-center justify-center transition-all hover:scale-110"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow"
+                aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a 
-                href="https://youtube.com" 
+                href="https://www.youtube.com/@CABBIEO" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent flex items-center justify-center transition-all hover:scale-110"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow"
+                aria-label="YouTube"
               >
                 <Youtube className="w-5 h-5" />
-              </a>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent flex items-center justify-center transition-all hover:scale-110"
-              >
-                <Twitter className="w-5 h-5" />
               </a>
             </div>
 

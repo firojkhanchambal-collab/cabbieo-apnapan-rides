@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, MapPin, Phone, Car, Bike, Truck, Ambulance, Navigation } from "lucide-react";
+import { Calendar, MapPin, Phone, Car, Bike, Truck, Ambulance, Navigation, MessageCircle, PhoneCall } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const BookingForm = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,11 @@ const BookingForm = () => {
     date: "",
     time: "",
     phone: "",
+    notes: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const CUSTOMER_CARE_PHONE = "+919876543210";
 
   const rideTypes = [
     { value: "rickshaw", label: "E-Rickshaw", icon: Navigation },
@@ -25,18 +30,75 @@ const BookingForm = () => {
     { value: "ambulance", label: "Ambulance", icon: Ambulance },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate required fields
     if (!formData.pickup || !formData.drop || !formData.rideType || !formData.phone) {
       toast.error("कृपया सभी आवश्यक फ़ील्ड भरें");
       return;
     }
 
-    toast.success("बुकिंग रिक्वेस्ट प्राप्त हुई! हम जल्द ही आपसे संपर्क करेंगे।");
-    
-    // Here you would typically send the booking data to your backend
-    console.log("Booking data:", formData);
+    // Validate phone number (10 digits, India format)
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("कृपया 10 अंकों का वैध फ़ोन नंबर दर्ज करें");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save booking to database
+      const { error } = await supabase.from("bookings").insert({
+        pickup_location: formData.pickup,
+        drop_location: formData.drop,
+        ride_type: formData.rideType,
+        booking_date: formData.date || null,
+        booking_time: formData.time || null,
+        phone: formData.phone,
+        additional_notes: formData.notes || null,
+      });
+
+      if (error) throw error;
+
+      toast.success("🎉 Ride Request Sent Successfully!");
+      
+      // Reset form
+      setFormData({
+        pickup: "",
+        drop: "",
+        rideType: "",
+        date: "",
+        time: "",
+        phone: "",
+        notes: "",
+      });
+    } catch (error) {
+      console.error("Booking error:", error);
+      toast.error("बुकिंग में समस्या हुई। कृपया दोबारा प्रयास करें या हमें कॉल करें।");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleWhatsAppConfirmation = () => {
+    if (!formData.pickup || !formData.drop || !formData.rideType || !formData.phone) {
+      toast.error("कृपया पहले फॉर्म भरें");
+      return;
+    }
+
+    const message = `Hello CABBIEO 👋
+I'd like to book a ride.
+Pickup: ${formData.pickup}
+Drop: ${formData.drop}
+Ride Type: ${formData.rideType}
+Date & Time: ${formData.date || 'ASAP'} ${formData.time || ''}
+Contact: ${formData.phone}
+${formData.notes ? `Notes: ${formData.notes}` : ''}`;
+
+    const whatsappUrl = `https://wa.me/${CUSTOMER_CARE_PHONE.replace(/\+/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
@@ -136,7 +198,7 @@ const BookingForm = () => {
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-primary" />
-                    Phone Number
+                    Phone Number *
                   </Label>
                   <Input
                     id="phone"
@@ -149,18 +211,60 @@ const BookingForm = () => {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                size="lg" 
-                className="w-full bg-gradient-primary hover:opacity-90 font-poppins font-semibold text-lg py-6 shadow-primary"
-              >
-                Confirm Booking
-              </Button>
+              {/* Additional Notes */}
+              <div className="space-y-2">
+                <Label htmlFor="notes">Additional Notes (Optional)</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Any special requirements or instructions..."
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  rows={3}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-primary hover:opacity-90 font-poppins font-semibold text-lg py-6 shadow-primary disabled:opacity-50"
+                >
+                  {isSubmitting ? "Submitting..." : "Confirm Booking"}
+                </Button>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={handleWhatsAppConfirmation}
+                    className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50 font-semibold"
+                  >
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    WhatsApp Confirmation
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    asChild
+                    className="w-full border-2 border-primary hover:bg-primary/5 font-semibold"
+                  >
+                    <a href={`tel:${CUSTOMER_CARE_PHONE}`}>
+                      <PhoneCall className="w-5 h-5 mr-2" />
+                      Call Now
+                    </a>
+                  </Button>
+                </div>
+              </div>
 
               <p className="text-sm text-center text-muted-foreground">
-                Or call us directly at{" "}
-                <a href="tel:+919876543210" className="text-primary hover:underline font-semibold">
-                  +91 98765 43210
+                Customer Care:{" "}
+                <a href={`tel:${CUSTOMER_CARE_PHONE}`} className="text-primary hover:underline font-semibold">
+                  {CUSTOMER_CARE_PHONE}
                 </a>
               </p>
             </form>
