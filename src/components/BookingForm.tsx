@@ -23,12 +23,17 @@ const BookingForm = () => {
   const CUSTOMER_CARE_PHONE = "+919876543210";
 
   const rideTypes = [
-    { value: "rickshaw", label: "E-Rickshaw", icon: Navigation },
-    { value: "bike", label: "Bike", icon: Bike },
-    { value: "car", label: "Car/Cab", icon: Car },
-    { value: "outstation", label: "Outstation", icon: Truck },
-    { value: "ambulance", label: "Ambulance", icon: Ambulance },
+    { value: "rickshaw", label: "E-Rickshaw", icon: Navigation, baseRate: 50 },
+    { value: "bike", label: "Bike", icon: Bike, baseRate: 80 },
+    { value: "car", label: "Car/Cab", icon: Car, baseRate: 150 },
+    { value: "outstation", label: "Outstation", icon: Truck, baseRate: 500 },
+    { value: "ambulance", label: "Ambulance", icon: Ambulance, baseRate: 300 },
   ];
+
+  const getRateInfo = (rideType: string) => {
+    const ride = rideTypes.find(r => r.value === rideType);
+    return ride ? `₹${ride.baseRate}+ (Base Rate)` : "Rate to be confirmed";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +67,11 @@ const BookingForm = () => {
 
       if (error) throw error;
 
-      toast.success("🎉 Ride Request Sent Successfully!");
+      const rateInfo = getRateInfo(formData.rideType);
+      toast.success(
+        `✅ बुकिंग स्वीकार कर ली गई है!\n\n${rateInfo}\n\nहम जल्द ही आपसे संपर्क करेंगे।`,
+        { duration: 6000 }
+      );
       
       // Reset form
       setFormData({
