@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { LogOut, Phone, MapPin, Calendar, Clock, FileText, Car } from "lucide-react";
+import { LogOut, Phone, MapPin, Calendar, Clock, FileText, Car, Users } from "lucide-react";
 
 interface Booking {
   id: string;
@@ -148,10 +148,16 @@ const AdminDashboard = () => {
             <h1 className="text-4xl font-bold text-foreground">CABBIEO Admin Panel</h1>
             <p className="text-muted-foreground mt-2">सभी bookings को manage करें</p>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => navigate("/admin/drivers")}>
+              <Users className="w-4 h-4 mr-2" />
+              Manage Drivers
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-4 mb-8">

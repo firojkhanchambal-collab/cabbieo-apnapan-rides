@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Truck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   const scrollToBooking = () => {
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -44,6 +47,15 @@ const Hero = () => {
           >
             Book Your Ride
             <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+          
+          <Button 
+            size="lg" 
+            onClick={() => navigate("/driver/register")}
+            className="bg-primary text-white hover:bg-primary/90 font-poppins font-semibold text-lg px-8 py-6 transition-all hover:scale-105 border-2 border-white/20"
+          >
+            <Truck className="mr-2 h-5 w-5" />
+            Become a Driver
           </Button>
           
           <Button 

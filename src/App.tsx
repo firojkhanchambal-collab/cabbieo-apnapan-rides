@@ -9,6 +9,9 @@ import CabbieoAlternatives from "./pages/alternatives/CabbieoAlternatives";
 import CabbieoFAQ from "./pages/faq/CabbieoFAQ";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
+import DriverRegister from "./pages/driver/Register";
+import DriverDashboard from "./pages/driver/Dashboard";
+import DriverManagement from "./pages/admin/DriverManagement";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +27,9 @@ const App = () => (
           <Route path="/faq/cabbieo" element={<CabbieoFAQ />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/drivers" element={<DriverManagement />} />
+          <Route path="/driver/register" element={<DriverRegister />} />
+          <Route path="/driver/dashboard" element={<DriverDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
