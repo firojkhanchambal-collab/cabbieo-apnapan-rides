@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
+        hind: ['Hind', 'Noto Sans Devanagari', 'sans-serif'],
+        devanagari: ['Noto Sans Devanagari', 'Hind', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
