@@ -27,28 +27,23 @@ const DriverRegister = () => {
     setLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast.error("Please login first to register as a driver");
-        navigate("/admin/login");
-        return;
-      }
+      // Generate a temporary user_id for unregistered drivers
+      const tempUserId = crypto.randomUUID();
 
       const { error } = await supabase
         .from("drivers")
         .insert({
-          user_id: user.id,
+          user_id: tempUserId,
           ...formData,
         });
 
       if (error) throw error;
 
-      toast.success("Registration submitted successfully! We'll review your application soon.");
-      navigate("/driver/dashboard");
+      toast.success("✅ Registration submit हो गया! हम जल्द ही आपकी application review करेंगे।");
+      navigate("/");
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error(error.message || "Failed to submit registration");
+      toast.error(error.message || "Registration submit नहीं हो पाया");
     } finally {
       setLoading(false);
     }

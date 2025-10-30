@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Phone, FileText, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Calendar, Clock, MapPin, Phone, FileText, CheckCircle, XCircle, AlertCircle, UserCircle } from "lucide-react";
+
+interface Driver {
+  id: string;
+  full_name: string;
+  phone: string;
+  vehicle_type: string;
+  vehicle_number: string;
+  status: string;
+}
 
 interface Booking {
   id: string;
@@ -16,14 +26,17 @@ interface Booking {
   additional_notes: string | null;
   status: string;
   created_at: string;
+  assigned_driver_id: string | null;
 }
 
 export const BookingsSection = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBookings();
+    fetchDrivers();
     setupRealtimeSubscription();
   }, []);
 
@@ -40,6 +53,21 @@ export const BookingsSection = () => {
       toast.error("Bookings लोड नहीं हो पाईं: " + error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDrivers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("drivers")
+        .select("*")
+        .eq("status", "approved")
+        .order("full_name");
+
+      if (error) throw error;
+      setDrivers(data || []);
+    } catch (error: any) {
+      toast.error("Drivers लोड नहीं हो पाए: " + error.message);
     }
   };
 
@@ -85,6 +113,53 @@ export const BookingsSection = () => {
     } catch (error: any) {
       toast.error("Status अपडेट नहीं हो पाया: " + error.message);
     }
+  };
+
+  const assignDriver = async (bookingId: string, driverId: string) => {
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .update({ 
+          assigned_driver_id: driverId,
+          status: "confirmed"
+        })
+        .eq("id", bookingId);
+
+      if (error) throw error;
+      toast.success("✅ Driver assign हो गया!");
+    } catch (error: any) {
+      toast.error("Driver assign नहीं हो पाया: " + error.message);
+    }
+  };
+
+  const autoAssignDriver = async (bookingId: string) => {
+    try {
+      // Get available drivers (approved and not currently assigned to pending bookings)
+      const { data: availableDrivers, error: driverError } = await supabase
+        .from("drivers")
+        .select("id")
+        .eq("status", "approved");
+
+      if (driverError) throw driverError;
+
+      if (!availableDrivers || availableDrivers.length === 0) {
+        toast.error("कोई available driver नहीं है");
+        return;
+      }
+
+      // Randomly assign one of the available drivers
+      const randomDriver = availableDrivers[Math.floor(Math.random() * availableDrivers.length)];
+      
+      await assignDriver(bookingId, randomDriver.id);
+    } catch (error: any) {
+      toast.error("Auto-assign नहीं हो पाया: " + error.message);
+    }
+  };
+
+  const getDriverName = (driverId: string | null) => {
+    if (!driverId) return "Not Assigned";
+    const driver = drivers.find(d => d.id === driverId);
+    return driver ? `${driver.full_name} (${driver.vehicle_type})` : "Unknown Driver";
   };
 
   const getStatusColor = (status: string) => {
@@ -217,8 +292,43 @@ export const BookingsSection = () => {
                     <div className={`px-4 py-2 rounded-lg border text-center font-medium ${getStatusColor(booking.status)}`}>
                       {booking.status.toUpperCase()}
                     </div>
+
+                    {/* Driver Assignment Section */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <UserCircle className="w-4 h-4 text-primary" />
+                        <span className="font-medium">{getDriverName(booking.assigned_driver_id)}</span>
+                      </div>
+                      
+                      <Select 
+                        value={booking.assigned_driver_id || ""} 
+                        onValueChange={(value) => assignDriver(booking.id, value)}
+                      >
+                        <SelectTrigger className="w-full lg:w-[200px]">
+                          <SelectValue placeholder="Driver चुनें" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {drivers.map((driver) => (
+                            <SelectItem key={driver.id} value={driver.id}>
+                              {driver.full_name} - {driver.vehicle_type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => autoAssignDriver(booking.id)}
+                        className="w-full lg:w-[200px]"
+                      >
+                        Auto-Assign Driver
+                      </Button>
+                    </div>
+
+                    {/* Status Update Section */}
                     <Select value={booking.status} onValueChange={(value) => updateBookingStatus(booking.id, value)}>
-                      <SelectTrigger className="w-full lg:w-[180px]">
+                      <SelectTrigger className="w-full lg:w-[200px]">
                         <SelectValue placeholder="Status बदलें" />
                       </SelectTrigger>
                       <SelectContent>

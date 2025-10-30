@@ -17,6 +17,7 @@ export type Database = {
       bookings: {
         Row: {
           additional_notes: string | null
+          assigned_driver_id: string | null
           booking_date: string | null
           booking_time: string | null
           created_at: string
@@ -29,6 +30,7 @@ export type Database = {
         }
         Insert: {
           additional_notes?: string | null
+          assigned_driver_id?: string | null
           booking_date?: string | null
           booking_time?: string | null
           created_at?: string
@@ -41,6 +43,7 @@ export type Database = {
         }
         Update: {
           additional_notes?: string | null
+          assigned_driver_id?: string | null
           booking_date?: string | null
           booking_time?: string | null
           created_at?: string
@@ -51,7 +54,15 @@ export type Database = {
           ride_type?: string
           status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bookings_assigned_driver_id_fkey"
+            columns: ["assigned_driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       driver_notifications: {
         Row: {
