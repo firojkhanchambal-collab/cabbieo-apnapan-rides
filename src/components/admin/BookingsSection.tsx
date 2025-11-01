@@ -71,6 +71,25 @@ export const BookingsSection = () => {
     }
   };
 
+  const playNotificationSound = () => {
+    // Create a notification sound using Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+  };
+
   const setupRealtimeSubscription = () => {
     const channel = supabase
       .channel("bookings-changes")
@@ -83,8 +102,28 @@ export const BookingsSection = () => {
         },
         (payload) => {
           if (payload.eventType === "INSERT") {
-            setBookings((prev) => [payload.new as Booking, ...prev]);
-            toast.success("🎉 नई booking आई!");
+            const newBooking = payload.new as Booking;
+            setBookings((prev) => [newBooking, ...prev]);
+            
+            // Play notification sound
+            playNotificationSound();
+            
+            // Show detailed notification
+            toast.success(
+              `🚗 नई Booking Request!\n\n📍 ${newBooking.pickup_location} → ${newBooking.drop_location}\n📞 ${newBooking.phone}\n📅 ${newBooking.booking_date} | ⏰ ${newBooking.booking_time}`,
+              {
+                duration: 8000,
+                style: {
+                  background: '#10b981',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  padding: '20px',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+                }
+              }
+            );
           } else if (payload.eventType === "UPDATE") {
             setBookings((prev) =>
               prev.map((booking) =>
