@@ -45,6 +45,7 @@ export const BookingsSection = () => {
       const { data, error } = await supabase
         .from("bookings")
         .select("*")
+        .neq("status", "cancelled")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -103,33 +104,42 @@ export const BookingsSection = () => {
         (payload) => {
           if (payload.eventType === "INSERT") {
             const newBooking = payload.new as Booking;
-            setBookings((prev) => [newBooking, ...prev]);
-            
-            // Play notification sound
-            playNotificationSound();
-            
-            // Show detailed notification
-            toast.success(
-              `🚗 नई Booking Request!\n\n📍 ${newBooking.pickup_location} → ${newBooking.drop_location}\n📞 ${newBooking.phone}\n📅 ${newBooking.booking_date} | ⏰ ${newBooking.booking_time}`,
-              {
-                duration: 8000,
-                style: {
-                  background: '#10b981',
-                  color: 'white',
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+            // Only add if not cancelled
+            if (newBooking.status !== "cancelled") {
+              setBookings((prev) => [newBooking, ...prev]);
+              
+              // Play notification sound
+              playNotificationSound();
+              
+              // Show detailed notification
+              toast.success(
+                `🚗 नई Booking Request!\n\n📍 ${newBooking.pickup_location} → ${newBooking.drop_location}\n📞 ${newBooking.phone}\n📅 ${newBooking.booking_date} | ⏰ ${newBooking.booking_time}`,
+                {
+                  duration: 8000,
+                  style: {
+                    background: '#10b981',
+                    color: 'white',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+                  }
                 }
-              }
-            );
+              );
+            }
           } else if (payload.eventType === "UPDATE") {
-            setBookings((prev) =>
-              prev.map((booking) =>
-                booking.id === payload.new.id ? (payload.new as Booking) : booking
-              )
-            );
+            const updatedBooking = payload.new as Booking;
+            // Remove booking if status changed to cancelled
+            if (updatedBooking.status === "cancelled") {
+              setBookings((prev) => prev.filter((booking) => booking.id !== updatedBooking.id));
+            } else {
+              setBookings((prev) =>
+                prev.map((booking) =>
+                  booking.id === updatedBooking.id ? updatedBooking : booking
+                )
+              );
+            }
           }
         }
       )
