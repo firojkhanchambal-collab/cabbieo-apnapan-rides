@@ -59,6 +59,25 @@ export const DriversSection = () => {
     }
   };
 
+  const playNotificationSound = () => {
+    // Create a notification sound using Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+  };
+
   const setupRealtimeSubscription = () => {
     const channel = supabase
       .channel("drivers-changes")
@@ -71,8 +90,28 @@ export const DriversSection = () => {
         },
         (payload) => {
           if (payload.eventType === "INSERT") {
-            setDrivers((prev) => [payload.new as Driver, ...prev]);
-            toast.success("🎉 नया driver registration!");
+            const newDriver = payload.new as Driver;
+            setDrivers((prev) => [newDriver, ...prev]);
+            
+            // Play notification sound
+            playNotificationSound();
+            
+            // Show detailed notification
+            toast.success(
+              `🚗 नया Driver Registration!\n\n👤 ${newDriver.full_name}\n📞 ${newDriver.phone}\n📧 ${newDriver.email}\n🚙 ${newDriver.vehicle_type} - ${newDriver.vehicle_number}\n📍 ${newDriver.region}`,
+              {
+                duration: 8000,
+                style: {
+                  background: '#10b981',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  padding: '20px',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+                }
+              }
+            );
           } else if (payload.eventType === "UPDATE") {
             setDrivers((prev) =>
               prev.map((driver) =>
