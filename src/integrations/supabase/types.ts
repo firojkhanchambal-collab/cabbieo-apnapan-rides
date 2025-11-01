@@ -113,7 +113,7 @@ export type Database = {
           rejection_reason: string | null
           status: Database["public"]["Enums"]["driver_status"]
           updated_at: string
-          user_id: string
+          user_id: string | null
           vehicle_number: string
           vehicle_type: string
         }
@@ -130,7 +130,7 @@ export type Database = {
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["driver_status"]
           updated_at?: string
-          user_id: string
+          user_id?: string | null
           vehicle_number: string
           vehicle_type: string
         }
@@ -147,7 +147,7 @@ export type Database = {
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["driver_status"]
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
           vehicle_number?: string
           vehicle_type?: string
         }

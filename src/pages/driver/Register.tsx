@@ -27,13 +27,10 @@ const DriverRegister = () => {
     setLoading(true);
 
     try {
-      // Generate a temporary user_id for unregistered drivers
-      const tempUserId = crypto.randomUUID();
-
       const { error } = await supabase
         .from("drivers")
         .insert({
-          user_id: tempUserId,
+          user_id: null, // No authentication required for driver registration
           ...formData,
         });
 
