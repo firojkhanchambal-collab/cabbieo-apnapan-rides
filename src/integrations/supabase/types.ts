@@ -17,40 +17,58 @@ export type Database = {
       bookings: {
         Row: {
           additional_notes: string | null
+          advance_amount: number | null
           assigned_driver_id: string | null
           booking_date: string | null
           booking_time: string | null
           created_at: string
+          distance_km: number | null
           drop_location: string
+          estimated_fare: number | null
           id: string
+          payment_status: string | null
           phone: string
           pickup_location: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           ride_type: string
           status: string | null
         }
         Insert: {
           additional_notes?: string | null
+          advance_amount?: number | null
           assigned_driver_id?: string | null
           booking_date?: string | null
           booking_time?: string | null
           created_at?: string
+          distance_km?: number | null
           drop_location: string
+          estimated_fare?: number | null
           id?: string
+          payment_status?: string | null
           phone: string
           pickup_location: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           ride_type: string
           status?: string | null
         }
         Update: {
           additional_notes?: string | null
+          advance_amount?: number | null
           assigned_driver_id?: string | null
           booking_date?: string | null
           booking_time?: string | null
           created_at?: string
+          distance_km?: number | null
           drop_location?: string
+          estimated_fare?: number | null
           id?: string
+          payment_status?: string | null
           phone?: string
           pickup_location?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           ride_type?: string
           status?: string | null
         }
@@ -149,6 +167,33 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           vehicle_number?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
+      pricing_config: {
+        Row: {
+          base_fare: number
+          created_at: string
+          id: string
+          rate_per_km: number
+          updated_at: string
+          vehicle_type: string
+        }
+        Insert: {
+          base_fare?: number
+          created_at?: string
+          id?: string
+          rate_per_km?: number
+          updated_at?: string
+          vehicle_type: string
+        }
+        Update: {
+          base_fare?: number
+          created_at?: string
+          id?: string
+          rate_per_km?: number
+          updated_at?: string
           vehicle_type?: string
         }
         Relationships: []

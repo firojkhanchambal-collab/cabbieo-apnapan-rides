@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, MapPin, Phone, Car, Bike, Truck, Ambulance, Navigation, MessageCircle, PhoneCall } from "lucide-react";
+import { Calendar, MapPin, Phone, Car, Bike, Truck, Ambulance, Navigation, MessageCircle, PhoneCall, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useRazorpay } from "@/hooks/useRazorpay";
+
+interface PricingConfig {
+  vehicle_type: string;
+  rate_per_km: number;
+  base_fare: number;
+}
 
 const BookingForm = () => {
   const [formData, setFormData] = useState({
@@ -17,29 +24,206 @@ const BookingForm = () => {
     time: "",
     phone: "",
     notes: "",
+    distance: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pricing, setPricing] = useState<PricingConfig[]>([]);
+  const [estimatedFare, setEstimatedFare] = useState<number | null>(null);
+  const [advanceAmount, setAdvanceAmount] = useState<number | null>(null);
+  const { isLoaded: isRazorpayLoaded } = useRazorpay();
 
   const CUSTOMER_CARE_PHONE = "+919876543210";
 
   const rideTypes = [
-    { value: "rickshaw", label: "E-Rickshaw", icon: Navigation, baseRate: 50 },
-    { value: "bike", label: "Bike", icon: Bike, baseRate: 80 },
-    { value: "car", label: "Car/Cab", icon: Car, baseRate: 150 },
-    { value: "outstation", label: "Outstation", icon: Truck, baseRate: 500 },
-    { value: "ambulance", label: "Ambulance", icon: Ambulance, baseRate: 300 },
+    { value: "auto", label: "E-Rickshaw", icon: Navigation },
+    { value: "bike", label: "Bike", icon: Bike },
+    { value: "car", label: "Car/Cab", icon: Car },
+    { value: "outstation", label: "Outstation", icon: Truck },
+    { value: "suv", label: "SUV", icon: Ambulance },
   ];
 
-  const getRateInfo = (rideType: string) => {
-    const ride = rideTypes.find(r => r.value === rideType);
-    return ride ? `₹${ride.baseRate}+ (Base Rate)` : "Rate to be confirmed";
+  useEffect(() => {
+    fetchPricing();
+  }, []);
+
+  useEffect(() => {
+    calculateFare();
+  }, [formData.rideType, formData.distance, pricing]);
+
+  const fetchPricing = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("pricing_config")
+        .select("*");
+
+      if (error) throw error;
+      setPricing(data || []);
+    } catch (error) {
+      console.error("Error fetching pricing:", error);
+    }
+  };
+
+  const calculateFare = () => {
+    if (!formData.rideType || !formData.distance) {
+      setEstimatedFare(null);
+      setAdvanceAmount(null);
+      return;
+    }
+
+    const distance = parseFloat(formData.distance);
+    if (isNaN(distance) || distance <= 0) {
+      setEstimatedFare(null);
+      setAdvanceAmount(null);
+      return;
+    }
+
+    const config = pricing.find(p => p.vehicle_type === formData.rideType);
+    if (!config) return;
+
+    const fare = config.base_fare + (distance * config.rate_per_km);
+    const advance = Math.round(fare * 0.2); // 20% advance
+
+    setEstimatedFare(fare);
+    setAdvanceAmount(advance);
+  };
+
+  const handlePayment = async () => {
+    if (!advanceAmount || !estimatedFare) {
+      toast.error("कृपया पहले दूरी दर्ज करें");
+      return;
+    }
+
+    if (!isRazorpayLoaded) {
+      toast.error("Payment gateway loading...");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      // Create Razorpay order
+      const { data: orderData, error: orderError } = await supabase.functions.invoke(
+        'create-razorpay-order',
+        {
+          body: {
+            amount: advanceAmount,
+            currency: 'INR',
+            receipt: `booking_${Date.now()}`,
+            notes: {
+              pickup: formData.pickup,
+              drop: formData.drop,
+              ride_type: formData.rideType,
+            },
+          },
+        }
+      );
+
+      if (orderError) throw orderError;
+
+      const options = {
+        key: orderData.key_id,
+        amount: advanceAmount * 100,
+        currency: 'INR',
+        name: 'CABBIEO',
+        description: `Advance Payment - ${formData.rideType}`,
+        order_id: orderData.order.id,
+        handler: async (response: any) => {
+          await verifyPayment(response, orderData.order.id);
+        },
+        prefill: {
+          contact: formData.phone,
+        },
+        theme: {
+          color: '#3B82F6',
+        },
+        modal: {
+          ondismiss: () => {
+            setIsSubmitting(false);
+            toast.error("Payment cancelled");
+          },
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error("Payment failed. Please try again.");
+      setIsSubmitting(false);
+    }
+  };
+
+  const verifyPayment = async (paymentResponse: any, orderId: string) => {
+    try {
+      // First create the booking
+      const { data: bookingData, error: bookingError } = await supabase
+        .from("bookings")
+        .insert({
+          pickup_location: formData.pickup,
+          drop_location: formData.drop,
+          ride_type: formData.rideType,
+          booking_date: formData.date || null,
+          booking_time: formData.time || null,
+          phone: formData.phone,
+          additional_notes: formData.notes || null,
+          distance_km: parseFloat(formData.distance),
+          estimated_fare: estimatedFare,
+          advance_amount: advanceAmount,
+          razorpay_order_id: orderId,
+        })
+        .select()
+        .single();
+
+      if (bookingError) throw bookingError;
+
+      // Verify payment
+      const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
+        'verify-razorpay-payment',
+        {
+          body: {
+            razorpay_order_id: paymentResponse.razorpay_order_id,
+            razorpay_payment_id: paymentResponse.razorpay_payment_id,
+            razorpay_signature: paymentResponse.razorpay_signature,
+            booking_id: bookingData.id,
+          },
+        }
+      );
+
+      if (verifyError || !verifyData.verified) {
+        throw new Error('Payment verification failed');
+      }
+
+      toast.success(
+        `✅ बुकिंग कन्फर्म हो गई!\n\n💰 Advance Paid: ₹${advanceAmount}\n📊 Total Fare: ₹${estimatedFare}\n\nहम जल्द ही आपसे संपर्क करेंगे।`,
+        { duration: 8000 }
+      );
+
+      // Reset form
+      setFormData({
+        pickup: "",
+        drop: "",
+        rideType: "",
+        date: "",
+        time: "",
+        phone: "",
+        notes: "",
+        distance: "",
+      });
+      setEstimatedFare(null);
+      setAdvanceAmount(null);
+    } catch (error) {
+      console.error("Verification error:", error);
+      toast.error("Payment verification failed. Please contact support.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate required fields
-    if (!formData.pickup || !formData.drop || !formData.rideType || !formData.phone) {
+    if (!formData.pickup || !formData.drop || !formData.rideType || !formData.phone || !formData.distance) {
       toast.error("कृपया सभी आवश्यक फ़ील्ड भरें");
       return;
     }
@@ -51,44 +235,8 @@ const BookingForm = () => {
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      // Save booking to database
-      const { error } = await supabase.from("bookings").insert({
-        pickup_location: formData.pickup,
-        drop_location: formData.drop,
-        ride_type: formData.rideType,
-        booking_date: formData.date || null,
-        booking_time: formData.time || null,
-        phone: formData.phone,
-        additional_notes: formData.notes || null,
-      });
-
-      if (error) throw error;
-
-      const rateInfo = getRateInfo(formData.rideType);
-      toast.success(
-        `✅ बुकिंग स्वीकार कर ली गई है!\n\n${rateInfo}\n\nहम जल्द ही आपसे संपर्क करेंगे।`,
-        { duration: 6000 }
-      );
-      
-      // Reset form
-      setFormData({
-        pickup: "",
-        drop: "",
-        rideType: "",
-        date: "",
-        time: "",
-        phone: "",
-        notes: "",
-      });
-    } catch (error) {
-      console.error("Booking error:", error);
-      toast.error("बुकिंग में समस्या हुई। कृपया दोबारा प्रयास करें या हमें कॉल करें।");
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Proceed to payment
+    await handlePayment();
   };
 
   const handleWhatsAppConfirmation = () => {
@@ -102,6 +250,8 @@ I'd like to book a ride.
 Pickup: ${formData.pickup}
 Drop: ${formData.drop}
 Ride Type: ${formData.rideType}
+${formData.distance ? `Distance: ${formData.distance} km` : ''}
+${estimatedFare ? `Estimated Fare: ₹${estimatedFare}` : ''}
 Date & Time: ${formData.date || 'ASAP'} ${formData.time || ''}
 Contact: ${formData.phone}
 ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
@@ -118,7 +268,7 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
             Book Your Ride
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Simple, fast, and reliable booking for all your travel needs
+            Simple, fast, and reliable booking with 20% advance payment
           </p>
         </div>
 
@@ -152,7 +302,7 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                 <div className="space-y-2">
                   <Label htmlFor="pickup" className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-primary" />
-                    Pickup Location
+                    Pickup Location *
                   </Label>
                   <Input
                     id="pickup"
@@ -160,13 +310,14 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     value={formData.pickup}
                     onChange={(e) => setFormData({ ...formData, pickup: e.target.value })}
                     className="text-base"
+                    required
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="drop" className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-accent" />
-                    Drop Location
+                    Drop Location *
                   </Label>
                   <Input
                     id="drop"
@@ -174,8 +325,39 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     value={formData.drop}
                     onChange={(e) => setFormData({ ...formData, drop: e.target.value })}
                     className="text-base"
+                    required
                   />
                 </div>
+              </div>
+
+              {/* Distance Input */}
+              <div className="space-y-2">
+                <Label htmlFor="distance" className="flex items-center gap-2">
+                  <Navigation className="w-4 h-4 text-primary" />
+                  अनुमानित दूरी (किलोमीटर) *
+                </Label>
+                <Input
+                  id="distance"
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  placeholder="दूरी दर्ज करें (जैसे: 5.5)"
+                  value={formData.distance}
+                  onChange={(e) => setFormData({ ...formData, distance: e.target.value })}
+                  className="text-base"
+                  required
+                />
+                {estimatedFare && (
+                  <div className="mt-2 p-3 bg-primary/10 rounded-lg space-y-1">
+                    <p className="text-sm font-semibold flex items-center gap-2">
+                      <DollarSign className="w-4 h-4" />
+                      अनुमानित किराया: ₹{estimatedFare}
+                    </p>
+                    <p className="text-sm font-bold text-primary">
+                      20% Advance Payment: ₹{advanceAmount}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Date, Time & Phone */}
@@ -216,6 +398,7 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     maxLength={10}
+                    required
                   />
                 </div>
               </div>
@@ -237,10 +420,10 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                 <Button 
                   type="submit" 
                   size="lg" 
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !advanceAmount}
                   className="w-full bg-gradient-primary hover:opacity-90 font-poppins font-semibold text-lg py-6 shadow-primary disabled:opacity-50"
                 >
-                  {isSubmitting ? "Submitting..." : "Confirm Booking"}
+                  {isSubmitting ? "Processing..." : `Pay ₹${advanceAmount || 0} & Confirm Booking`}
                 </Button>
 
                 <div className="grid md:grid-cols-2 gap-3">
@@ -271,6 +454,8 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
               </div>
 
               <p className="text-sm text-center text-muted-foreground">
+                💡 20% advance payment required to confirm booking
+                <br />
                 Customer Care:{" "}
                 <a href={`tel:${CUSTOMER_CARE_PHONE}`} className="text-primary hover:underline font-semibold">
                   {CUSTOMER_CARE_PHONE}

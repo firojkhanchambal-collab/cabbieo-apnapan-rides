@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, BookOpen, Users, Menu } from "lucide-react";
+import { LogOut, BookOpen, Users, Menu, DollarSign } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { BookingsSection } from "./BookingsSection";
 import { DriversSection } from "./DriversSection";
+import PricingSection from "./PricingSection";
 import {
   Sheet,
   SheetContent,
@@ -17,7 +18,7 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAdmin, loading } = useAdminCheck();
-  const [activeTab, setActiveTab] = useState<"bookings" | "drivers">(
+  const [activeTab, setActiveTab] = useState<"bookings" | "drivers" | "pricing">(
     location.state?.section || "bookings"
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,6 +48,7 @@ const AdminLayout = () => {
   const navItems = [
     { id: "bookings" as const, label: "Bookings", icon: BookOpen },
     { id: "drivers" as const, label: "Drivers", icon: Users },
+    { id: "pricing" as const, label: "Pricing", icon: DollarSign },
   ];
 
   const Sidebar = () => (
@@ -116,6 +118,7 @@ const AdminLayout = () => {
         <div className="container mx-auto p-6">
           {activeTab === "bookings" && <BookingsSection />}
           {activeTab === "drivers" && <DriversSection />}
+          {activeTab === "pricing" && <PricingSection />}
         </div>
       </main>
     </div>
