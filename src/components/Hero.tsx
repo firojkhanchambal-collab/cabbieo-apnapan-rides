@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
+import cabbieoLogo from "@/assets/cabbieo-logo.png";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -29,6 +30,15 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center animate-fade-in">
+        {/* Logo */}
+        <div className="mb-8 animate-slide-up flex justify-center">
+          <img 
+            src={cabbieoLogo} 
+            alt="Cabbieo Logo" 
+            className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 drop-shadow-2xl animate-float"
+          />
+        </div>
+        
         <h1 className="font-poppins font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-tight animate-slide-up">
           Har Safar Mein
           <span className="block text-accent mt-2 animate-glow">Apnapan</span>

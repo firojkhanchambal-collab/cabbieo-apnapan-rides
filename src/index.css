@@ -9,41 +9,41 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 98%;
-    --foreground: 211 100% 10%;
+    --foreground: 25 60% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 211 100% 10%;
+    --card-foreground: 25 60% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 211 100% 10%;
+    --popover-foreground: 25 60% 15%;
 
-    --primary: 211 100% 36%;
+    --primary: 25 100% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 211 30% 92%;
-    --secondary-foreground: 211 100% 10%;
+    --secondary: 35 95% 92%;
+    --secondary-foreground: 25 60% 15%;
 
-    --muted: 211 20% 96%;
-    --muted-foreground: 211 15% 45%;
+    --muted: 35 30% 96%;
+    --muted-foreground: 25 20% 45%;
 
-    --accent: 51 100% 50%;
-    --accent-foreground: 211 100% 10%;
+    --accent: 40 100% 50%;
+    --accent-foreground: 25 60% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 211 20% 88%;
-    --input: 211 20% 88%;
-    --ring: 211 100% 36%;
+    --border: 35 20% 88%;
+    --input: 35 20% 88%;
+    --ring: 25 100% 55%;
 
     --radius: 0.75rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(211 100% 36%), hsl(211 100% 46%));
-    --gradient-accent: linear-gradient(135deg, hsl(51 100% 50%), hsl(51 100% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(211 100% 36%), hsl(211 80% 46%), hsl(51 100% 50%));
+    --gradient-primary: linear-gradient(135deg, hsl(25 100% 55%), hsl(14 95% 58%));
+    --gradient-accent: linear-gradient(135deg, hsl(40 100% 50%), hsl(35 100% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(14 95% 58%), hsl(25 100% 55%), hsl(40 100% 50%));
     
-    --shadow-glow: 0 0 40px hsl(51 100% 50% / 0.4);
-    --shadow-primary: 0 10px 30px -10px hsl(211 100% 36% / 0.3);
+    --shadow-glow: 0 0 40px hsl(25 100% 55% / 0.3);
+    --shadow-primary: 0 10px 30px -10px hsl(25 100% 55% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -56,40 +56,40 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 211 50% 8%;
-    --foreground: 51 100% 90%;
+    --background: 25 40% 10%;
+    --foreground: 40 100% 90%;
 
-    --card: 211 40% 10%;
-    --card-foreground: 51 100% 90%;
+    --card: 25 30% 12%;
+    --card-foreground: 40 100% 90%;
 
-    --popover: 211 40% 10%;
-    --popover-foreground: 51 100% 90%;
+    --popover: 25 30% 12%;
+    --popover-foreground: 40 100% 90%;
 
-    --primary: 211 100% 45%;
+    --primary: 25 100% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 211 30% 15%;
-    --secondary-foreground: 51 100% 90%;
+    --secondary: 25 25% 20%;
+    --secondary-foreground: 40 100% 90%;
 
-    --muted: 211 20% 15%;
-    --muted-foreground: 211 15% 65%;
+    --muted: 25 20% 18%;
+    --muted-foreground: 25 15% 65%;
 
-    --accent: 51 100% 50%;
-    --accent-foreground: 211 100% 10%;
+    --accent: 40 100% 50%;
+    --accent-foreground: 25 60% 15%;
 
     --destructive: 0 62.8% 40.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 211 20% 20%;
-    --input: 211 20% 20%;
-    --ring: 211 100% 45%;
+    --border: 25 20% 25%;
+    --input: 25 20% 25%;
+    --ring: 25 100% 55%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(211 100% 45%), hsl(211 100% 55%));
-    --gradient-accent: linear-gradient(135deg, hsl(51 100% 50%), hsl(51 100% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(211 50% 8%), hsl(211 60% 15%), hsl(51 80% 30%));
+    --gradient-primary: linear-gradient(135deg, hsl(25 100% 55%), hsl(14 95% 58%));
+    --gradient-accent: linear-gradient(135deg, hsl(40 100% 50%), hsl(35 100% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 40% 10%), hsl(25 50% 15%), hsl(40 80% 30%));
     
-    --shadow-glow: 0 0 40px hsl(51 100% 50% / 0.4);
-    --shadow-primary: 0 10px 30px -10px hsl(211 100% 45% / 0.4);
+    --shadow-glow: 0 0 40px hsl(25 100% 55% / 0.4);
+    --shadow-primary: 0 10px 30px -10px hsl(25 100% 55% / 0.4);
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
