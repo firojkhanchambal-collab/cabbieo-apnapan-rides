@@ -15,17 +15,17 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center animate-[pan_20s_ease-in-out_infinite]"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-accent/40" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-primary/20 to-transparent" />
       </div>
 
       {/* Animated Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-16 h-16 bg-accent/20 rounded-full animate-float blur-xl" />
-        <div className="absolute bottom-32 right-20 w-24 h-24 bg-accent/30 rounded-full animate-float blur-xl" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-primary/20 rounded-full animate-float blur-xl" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-20 left-10 w-16 h-16 bg-accent/10 rounded-full animate-float blur-xl" />
+        <div className="absolute bottom-32 right-20 w-24 h-24 bg-accent/15 rounded-full animate-float blur-xl" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-primary/10 rounded-full animate-float blur-xl" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Content */}
@@ -39,14 +39,14 @@ const Hero = () => {
           />
         </div>
         
-        <h1 className="font-poppins font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-tight animate-slide-up">
+        <h1 className="font-poppins font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-tight animate-slide-up drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
           Har Safar Mein
-          <span className="block text-accent mt-2 animate-glow">Apnapan</span>
+          <span className="block text-accent mt-2 animate-glow drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Apnapan</span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-12 leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-12 leading-relaxed animate-slide-up drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" style={{ animationDelay: '0.2s' }}>
           Book local rides, intercity trips, or outstation cabs instantly
-          <span className="block mt-2 text-accent font-semibold">Across Gwalior, Morena, Bhind & Beyond</span>
+          <span className="block mt-2 text-accent font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">Across Gwalior, Morena, Bhind & Beyond</span>
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style={{ animationDelay: '0.4s' }}>
