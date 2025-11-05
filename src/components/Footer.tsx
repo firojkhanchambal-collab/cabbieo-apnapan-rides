@@ -46,6 +46,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/terms-and-conditions" className="text-white/80 hover:text-accent transition-colors">
+                  Terms & Conditions
+                </Link>
+              </li>
+              <li>
                 <Link to="/solutions/cabbieo" className="text-white/80 hover:text-accent transition-colors">
                   Solutions
                 </Link>
