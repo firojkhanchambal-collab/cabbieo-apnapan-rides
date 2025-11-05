@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CabbieoAlternatives from "./pages/alternatives/CabbieoAlternatives";
 import CabbieoFAQ from "./pages/faq/CabbieoFAQ";
+import PrivacyPolicy from "./pages/privacy/PrivacyPolicy";
 import AdminLogin from "./pages/admin/Login";
 import AdminLayout from "./components/admin/AdminLayout";
 import DriverRegister from "./pages/driver/Register";
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/alternatives/cabbieo-alternatives" element={<CabbieoAlternatives />} />
           <Route path="/faq/cabbieo" element={<CabbieoFAQ />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminLayout />} />
           <Route path="/driver/register" element={<DriverRegister />} />
