@@ -32,7 +32,7 @@ const MobileApps = () => {
               <Button 
                 className="w-full max-w-xs"
                 size="lg"
-                onClick={() => window.open('https://play.google.com/store', '_blank')}
+                onClick={() => window.open('https://play.google.com/store/apps/details?id=com.taxigo.proapp', '_blank')}
               >
                 👉 Download Now on Google Play
               </Button>
@@ -52,7 +52,7 @@ const MobileApps = () => {
               <Button 
                 className="w-full max-w-xs"
                 size="lg"
-                onClick={() => window.open('https://play.google.com/store', '_blank')}
+                onClick={() => window.open('https://play.google.com/store/apps/details?id=com.taxigo.propilot', '_blank')}
               >
                 👉 Download Now on Google Play
               </Button>
