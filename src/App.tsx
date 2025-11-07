@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CabbieoAlternatives from "./pages/alternatives/CabbieoAlternatives";
+import CabbieoVsUber from "./pages/alternatives/CabbieoVsUber";
+import CabbieoVsOla from "./pages/alternatives/CabbieoVsOla";
+import CabbieoVsRapido from "./pages/alternatives/CabbieoVsRapido";
 import CabbieoFAQ from "./pages/faq/CabbieoFAQ";
 import PrivacyPolicy from "./pages/privacy/PrivacyPolicy";
 import TermsAndConditions from "./pages/terms/TermsAndConditions";
@@ -25,6 +28,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/alternatives/cabbieo-alternatives" element={<CabbieoAlternatives />} />
+          <Route path="/alternatives/cabbieo-vs-ubercom" element={<CabbieoVsUber />} />
+          <Route path="/alternatives/cabbieo-vs-olacabscom" element={<CabbieoVsOla />} />
+          <Route path="/alternatives/cabbieo-vs-rapidobike" element={<CabbieoVsRapido />} />
           <Route path="/faq/cabbieo" element={<CabbieoFAQ />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
