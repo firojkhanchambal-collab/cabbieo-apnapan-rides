@@ -1,8 +1,10 @@
-import { Smartphone, Car, Download, Star, Users, Zap, Shield, IndianRupee } from "lucide-react";
+import { Download, Star, Users, Zap, Shield, IndianRupee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import appsDecoBg from "@/assets/apps-decoration-bg.jpg";
+import customerIcon from "@/assets/cabbieo-customer-icon.png";
+import driverIcon from "@/assets/cabbieo-driver-icon.png";
 
 const MobileApps = () => {
   return (
@@ -45,7 +47,7 @@ const MobileApps = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" />
             
             <CardContent className="p-8 relative">
-              {/* Icon Placeholder - Links to Play Store */}
+              {/* Customer App Icon */}
               <div className="mb-6 text-center">
                 <a 
                   href="https://play.google.com/store/apps/details?id=com.taxigo.proapp"
@@ -53,8 +55,12 @@ const MobileApps = () => {
                   rel="noopener noreferrer"
                   className="inline-block"
                 >
-                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-primary to-primary/60 rounded-3xl flex items-center justify-center shadow-lg hover-scale transform transition-all duration-300 hover:rotate-6">
-                    <Smartphone className="w-12 h-12 text-primary-foreground" />
+                  <div className="w-28 h-28 mx-auto hover-scale transform transition-all duration-300 hover:rotate-3">
+                    <img 
+                      src={customerIcon} 
+                      alt="Cabbieo Customer App Icon" 
+                      className="w-full h-full object-contain drop-shadow-2xl"
+                    />
                   </div>
                 </a>
               </div>
@@ -118,7 +124,7 @@ const MobileApps = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/20 to-transparent rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" />
             
             <CardContent className="p-8 relative">
-              {/* Icon Placeholder - Links to Play Store */}
+              {/* Driver App Icon */}
               <div className="mb-6 text-center">
                 <a 
                   href="https://play.google.com/store/apps/details?id=com.taxigo.propilot"
@@ -126,8 +132,12 @@ const MobileApps = () => {
                   rel="noopener noreferrer"
                   className="inline-block"
                 >
-                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-accent to-accent/60 rounded-3xl flex items-center justify-center shadow-lg hover-scale transform transition-all duration-300 hover:rotate-6">
-                    <Car className="w-12 h-12 text-accent-foreground" />
+                  <div className="w-28 h-28 mx-auto hover-scale transform transition-all duration-300 hover:rotate-3">
+                    <img 
+                      src={driverIcon} 
+                      alt="Cabbieo Driver App Icon" 
+                      className="w-full h-full object-contain drop-shadow-2xl"
+                    />
                   </div>
                 </a>
               </div>
