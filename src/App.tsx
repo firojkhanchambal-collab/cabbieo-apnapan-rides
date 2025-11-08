@@ -16,6 +16,7 @@ import AdminLogin from "./pages/admin/Login";
 import AdminLayout from "./components/admin/AdminLayout";
 import DriverRegister from "./pages/driver/Register";
 import DriverDashboard from "./pages/driver/Dashboard";
+import CabbieoSolutions from "./pages/solutions/CabbieoSolutions";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminLayout />} />
           <Route path="/driver/register" element={<DriverRegister />} />
           <Route path="/driver/dashboard" element={<DriverDashboard />} />
+          <Route path="/solutions/cabbieo" element={<CabbieoSolutions />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
