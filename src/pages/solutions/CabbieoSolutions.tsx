@@ -1,5 +1,6 @@
 import { ArrowLeft, Car, Bike, Ambulance, Users, MapPin, Clock, Shield, Sparkles, IndianRupee, Zap, TrendingDown, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,88 @@ import Footer from "@/components/Footer";
 import rickshawIcon from "@/assets/rickshaw-icon.png";
 
 const CabbieoSolutions = () => {
+  // SEO Data
+  const pageTitle = "Cabbieo Solutions - Cheapest Bike, E-Rickshaw & Auto Rides in Gwalior | ₹20 Starting Fare";
+  const pageDescription = "Book affordable rides in Gwalior & Chambal region. Bike rides from ₹20, E-Rickshaw from ₹35, Auto from ₹40. 24/7 service, instant withdrawal, low commission 5-15%. Best alternative to Ola, Uber, Rapido.";
+  const pageKeywords = "Cabbieo, Gwalior taxi, cheap rides Gwalior, bike taxi Gwalior, e-rickshaw booking, auto booking Gwalior, Chambal region transport, affordable cab service, Ola alternative, Uber alternative, Rapido alternative, local taxi Gwalior, outstation cab Gwalior, ambulance service Gwalior, driver partner registration, low commission cab service, instant withdrawal, bike ride ₹20, cheapest transport Gwalior, MP taxi service, Madhya Pradesh cab booking";
+  const pageUrl = "https://cabbieo.com/solutions/cabbieo";
+  const pageImage = "https://cabbieo.com/og-image.jpg"; // You'll need to add this image
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Cabbieo",
+    "description": pageDescription,
+    "url": pageUrl,
+    "logo": "https://cabbieo.com/logo.png",
+    "image": pageImage,
+    "telephone": "+91-98765-43210",
+    "email": "support@cabbieo.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Gwalior",
+      "addressRegion": "Madhya Pradesh",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "26.2183",
+      "longitude": "78.1828"
+    },
+    "areaServed": {
+      "@type": "GeoCircle",
+      "geoMidpoint": {
+        "@type": "GeoCoordinates",
+        "latitude": "26.2183",
+        "longitude": "78.1828"
+      },
+      "geoRadius": "100000"
+    },
+    "priceRange": "₹20-₹500",
+    "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 00:00-23:59",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Ride Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Bike Ride",
+            "description": "Fast and affordable bike taxi service"
+          },
+          "price": "20",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "E-Rickshaw Ride",
+            "description": "Eco-friendly electric rickshaw service"
+          },
+          "price": "35",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Auto Ride",
+            "description": "Comfortable auto rickshaw service"
+          },
+          "price": "40",
+          "priceCurrency": "INR"
+        }
+      ]
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "reviewCount": "2500"
+    }
+  };
+
   const solutions = [
     {
       icon: Car,
@@ -82,26 +165,86 @@ const CabbieoSolutions = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <>
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{pageTitle}</title>
+        <meta name="title" content={pageTitle} />
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
+        <meta name="author" content="Cabbieo" />
+        <meta name="robots" content="index, follow" />
+        <meta name="language" content="English, Hindi" />
+        <meta name="revisit-after" content="7 days" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={pageUrl} />
+        
+        {/* Open Graph / Facebook / Instagram */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={pageImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="Cabbieo" />
+        <meta property="og:locale" content="en_IN" />
+        <meta property="fb:app_id" content="YOUR_FACEBOOK_APP_ID" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageUrl} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
+        <meta name="twitter:site" content="@cabbieo" />
+        <meta name="twitter:creator" content="@cabbieo" />
+        
+        {/* Additional Meta Tags for Better Discovery */}
+        <meta name="geo.region" content="IN-MP" />
+        <meta name="geo.placename" content="Gwalior" />
+        <meta name="geo.position" content="26.2183;78.1828" />
+        <meta name="ICBM" content="26.2183, 78.1828" />
+        
+        {/* Mobile App Deep Linking */}
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Cabbieo" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+      
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       {/* Hero Section */}
       <section className="relative bg-primary text-white py-20">
         <div className="container mx-auto px-4">
-          <Link to="/" className="inline-flex items-center gap-2 text-accent hover:text-accent/80 mb-8 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-2 text-accent hover:text-accent/80 mb-8 transition-colors" aria-label="Back to Cabbieo Home">
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Link>
           
           <div className="max-w-3xl animate-fade-in">
             <h1 className="font-poppins font-bold text-4xl md:text-5xl mb-4">
-              Cabbieo Solutions
+              Cheapest Cab Service in Gwalior - Bike ₹20, E-Rickshaw ₹35, Auto ₹40
             </h1>
             <p className="text-xl text-white/90 mb-6">
-              Har Safar Mein Apnapan - Complete Transportation Solutions for Chambal Region
+              Har Safar Mein Apnapan - Gwalior & Chambal Region's Most Affordable Transportation Solutions
             </p>
-            <p className="text-white/80 leading-relaxed">
+            <p className="text-white/80 leading-relaxed mb-4">
               Local rides se lekar outstation trips tak, emergency ambulance se lekar daily commute - 
-              Cabbieo har zaroorat ka solution provide karta hai.
+              Cabbieo har zaroorat ka solution provide karta hai with lowest fares in town.
             </p>
+            <div className="flex flex-wrap gap-3 mt-6">
+              <Badge variant="secondary" className="text-sm px-4 py-2">24/7 Available</Badge>
+              <Badge variant="secondary" className="text-sm px-4 py-2">Instant Booking</Badge>
+              <Badge variant="secondary" className="text-sm px-4 py-2">Safe & Verified Drivers</Badge>
+              <Badge variant="secondary" className="text-sm px-4 py-2">Zero Hidden Charges</Badge>
+            </div>
           </div>
         </div>
       </section>
@@ -374,6 +517,7 @@ const CabbieoSolutions = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

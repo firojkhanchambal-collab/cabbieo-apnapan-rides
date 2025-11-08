@@ -1,8 +1,10 @@
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +12,20 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: Instagrambot
+Allow: /
+
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /driver/dashboard
+
+# Sitemap
+Sitemap: https://cabbieo.com/sitemap.xml
+
+# Important pages for crawling
+Allow: /solutions/cabbieo
+Allow: /alternatives/
+Allow: /faq/
+Allow: /privacy-policy
+Allow: /terms-and-conditions
