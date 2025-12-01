@@ -7,22 +7,22 @@ import Footer from "@/components/Footer";
 const CabbieoAlternatives = () => {
   const alternatives = [
     {
-      name: "Uber",
+      name: "App-Based Cab Services",
       pros: ["Wide availability", "Multiple payment options"],
       cons: ["Higher prices", "Limited local focus", "Surge pricing"],
-      link: "/alternatives/cabbieo-vs-ubercom"
+      link: "/alternatives/cabbieo-vs-app-based-cabs"
     },
     {
-      name: "Ola",
-      pros: ["Established brand", "App features"],
+      name: "Traditional Cab Apps",
+      pros: ["Established platforms", "App features"],
       cons: ["Premium pricing", "Less coverage in smaller cities"],
-      link: "/alternatives/cabbieo-vs-olacabscom"
+      link: "/alternatives/cabbieo-vs-traditional-cabs"
     },
     {
-      name: "Rapido",
+      name: "Bike Taxi Services",
       pros: ["Bike rides", "Quick service"],
       cons: ["Limited vehicle options", "Safety concerns"],
-      link: "/alternatives/cabbieo-vs-rapidobike"
+      link: "/alternatives/cabbieo-vs-bike-taxis"
     },
   ];
 
@@ -155,7 +155,7 @@ const CabbieoAlternatives = () => {
           
           <p className="text-muted-foreground leading-relaxed mb-6">
             The ride-booking industry in India has evolved significantly, with multiple players offering 
-            various services. While platforms like Uber and Ola have dominated urban markets with premium 
+            various services. While many app-based platforms have dominated urban markets with premium 
             pricing, CABBIEO focuses on providing affordable, community-driven transportation solutions 
             specifically tailored for the Chambal region including Gwalior, Morena, Bhind, Sheopur, Datia, 
             and Shivpuri.
