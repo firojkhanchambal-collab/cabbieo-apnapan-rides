@@ -71,7 +71,7 @@ const Hero = () => {
           <Button 
             size="lg" 
             variant="outline"
-            className="border-2 border-white text-white hover:bg-white hover:text-primary font-poppins font-semibold text-lg px-8 py-6 transition-all hover:scale-105"
+            className="border-2 border-accent text-foreground bg-background/10 hover:bg-accent hover:text-accent-foreground font-poppins font-semibold text-lg px-8 py-6 transition-all hover:scale-105 backdrop-blur-sm"
             onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
           >
             Learn More
