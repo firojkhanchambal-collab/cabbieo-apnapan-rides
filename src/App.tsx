@@ -9,6 +9,9 @@ import CabbieoAlternatives from "./pages/alternatives/CabbieoAlternatives";
 import CabbieoVsUber from "./pages/alternatives/CabbieoVsUber";
 import CabbieoVsOla from "./pages/alternatives/CabbieoVsOla";
 import CabbieoVsRapido from "./pages/alternatives/CabbieoVsRapido";
+import CabbieoVsAppBasedCabs from "./pages/alternatives/CabbieoVsAppBasedCabs";
+import CabbieoVsTraditionalCabs from "./pages/alternatives/CabbieoVsTraditionalCabs";
+import CabbieoVsBikeTaxis from "./pages/alternatives/CabbieoVsBikeTaxis";
 import CabbieoFAQ from "./pages/faq/CabbieoFAQ";
 import PrivacyPolicy from "./pages/privacy/PrivacyPolicy";
 import TermsAndConditions from "./pages/terms/TermsAndConditions";
@@ -32,6 +35,9 @@ const App = () => (
           <Route path="/alternatives/cabbieo-vs-ubercom" element={<CabbieoVsUber />} />
           <Route path="/alternatives/cabbieo-vs-olacabscom" element={<CabbieoVsOla />} />
           <Route path="/alternatives/cabbieo-vs-rapidobike" element={<CabbieoVsRapido />} />
+          <Route path="/alternatives/cabbieo-vs-app-based-cabs" element={<CabbieoVsAppBasedCabs />} />
+          <Route path="/alternatives/cabbieo-vs-traditional-cabs" element={<CabbieoVsTraditionalCabs />} />
+          <Route path="/alternatives/cabbieo-vs-bike-taxis" element={<CabbieoVsBikeTaxis />} />
           <Route path="/faq/cabbieo" element={<CabbieoFAQ />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
