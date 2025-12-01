@@ -1,4 +1,4 @@
-import { ArrowLeft, Car, Bike, Ambulance, Users, MapPin, Clock, Shield, Sparkles, IndianRupee, Zap, TrendingDown, Wallet } from "lucide-react";
+import { ArrowLeft, Car, Bike, Ambulance, Users, MapPin, Clock, Shield, Sparkles, IndianRupee, Zap, TrendingDown, Wallet, CarFront } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
@@ -262,7 +262,7 @@ const CabbieoSolutions = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto mb-12">
             {/* Bike Card */}
             <Card className="relative overflow-hidden group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 hover:border-primary/50">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-[100px] transition-all duration-500 group-hover:w-40 group-hover:h-40"></div>
@@ -280,7 +280,7 @@ const CabbieoSolutions = () => {
                   </div>
                   <div className="flex items-center justify-center gap-1">
                     <IndianRupee className="w-8 h-8 text-primary" />
-                    <span className="text-5xl font-bold text-primary">20</span>
+                    <span className="text-5xl font-bold text-primary">19</span>
                   </div>
                   <Badge variant="secondary" className="mt-3">Per Ride</Badge>
                 </div>
@@ -316,7 +316,7 @@ const CabbieoSolutions = () => {
                   </div>
                   <div className="flex items-center justify-center gap-1">
                     <IndianRupee className="w-8 h-8 text-accent" />
-                    <span className="text-5xl font-bold text-accent">35</span>
+                    <span className="text-5xl font-bold text-accent">29</span>
                   </div>
                   <Badge variant="secondary" className="mt-3">Per Ride</Badge>
                 </div>
@@ -350,7 +350,7 @@ const CabbieoSolutions = () => {
                   </div>
                   <div className="flex items-center justify-center gap-1">
                     <IndianRupee className="w-8 h-8 text-primary" />
-                    <span className="text-5xl font-bold text-primary">40</span>
+                    <span className="text-5xl font-bold text-primary">39</span>
                   </div>
                   <Badge variant="secondary" className="mt-3">Per Ride</Badge>
                 </div>
@@ -362,6 +362,40 @@ const CabbieoSolutions = () => {
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-accent" />
                     <span>Perfect for groups</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Car Card */}
+            <Card className="relative overflow-hidden group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 hover:border-primary/50">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-[100px] transition-all duration-500 group-hover:w-40 group-hover:h-40"></div>
+              <CardHeader className="text-center relative z-10">
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl flex items-center justify-center transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-lg">
+                  <CarFront className="w-12 h-12 text-primary" />
+                </div>
+                <CardTitle className="text-2xl mb-2">Car Rides</CardTitle>
+                <CardDescription>Premium Comfort</CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <div className="mb-6">
+                  <div className="flex items-center justify-center gap-1 mb-2">
+                    <span className="text-sm text-muted-foreground">Starting at just</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1">
+                    <IndianRupee className="w-8 h-8 text-primary" />
+                    <span className="text-5xl font-bold text-primary">99</span>
+                  </div>
+                  <Badge variant="secondary" className="mt-3">Per Ride</Badge>
+                </div>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-accent" />
+                    <span>Premium & safe</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-accent" />
+                    <span>Spacious for families</span>
                   </div>
                 </div>
               </CardContent>
