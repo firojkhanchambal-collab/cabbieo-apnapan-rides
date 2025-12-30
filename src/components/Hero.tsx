@@ -30,8 +30,8 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center animate-fade-in">
-        {/* Logo */}
-        <div className="mb-8 animate-slide-up flex justify-center">
+        {/* Logo - moved up */}
+        <div className="-mt-16 mb-4 animate-slide-up flex justify-center">
           <img 
             src={cabbieoLogo} 
             alt="Cabbieo Logo" 
@@ -39,7 +39,8 @@ const Hero = () => {
           />
         </div>
         
-        <h1 className="font-poppins font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-tight animate-slide-up drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+        {/* Headline - positioned below logo */}
+        <h1 className="font-poppins font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-tight animate-slide-up drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] mt-2">
           Har Safar Mein
           <span className="block text-accent mt-2 animate-glow drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Apnapan</span>
         </h1>
