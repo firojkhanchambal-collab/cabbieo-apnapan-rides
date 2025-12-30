@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CABBIEO - Har Safar Mein Apnapan | Book Auto, Cab & Bike</title>
+  <meta name="description" content="Book local rides, intercity trips, or outstation cabs instantly across Gwalior, Morena, Bhind & Beyond. Smart Local & Outstation Ride-Booking Platform.">
+  <meta name="keywords" content="CABBIEO, cab booking, auto rickshaw, bike taxi, outstation cabs, Gwalior, Morena, Bhind, Chambal">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <style>
+    :root {
+      --background: hsl(0, 0%, 98%);
+      --foreground: hsl(25, 60%, 15%);
+      --card: hsl(0, 0%, 100%);
+      --card-foreground: hsl(25, 60%, 15%);
+      --primary: hsl(25, 100%, 55%);
+      --primary-foreground: hsl(0, 0%, 100%);
+      --secondary: hsl(35, 95%, 92%);
+      --secondary-foreground: hsl(25, 60%, 15%);
+      --muted: hsl(35, 30%, 96%);
+      --muted-foreground: hsl(25, 20%, 45%);
+      --accent: hsl(40, 100%, 50%);
+      --accent-foreground: hsl(25, 60%, 15%);
+      --border: hsl(35, 20%, 88%);
+      --radius: 0.75rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Hind', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+    }
+
+    .font-poppins {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes glow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) translateX(-50%); }
+      50% { transform: translateY(-10px) translateX(-50%); }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .animate-glow {
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-image: url('/src/assets/hero-bg.jpg');
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(230, 126, 34, 0.3), rgba(230, 126, 34, 0.2), transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1rem;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .hero h1 span {
+      display: block;
+      color: var(--accent);
+      margin-top: 0.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: white;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .hero-subtitle span {
+      display: block;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: var(--radius);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--primary);
+    }
+
+    .btn-secondary {
+      background-color: var(--primary);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-outline {
+      background-color: rgba(255,255,255,0.1);
+      color: var(--foreground);
+      border: 2px solid var(--accent);
+      backdrop-filter: blur(4px);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .hero-stats {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.05);
+    }
+
+    .stat-value {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator-inner {
+      width: 24px;
+      height: 40px;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 9999px;
+      display: flex;
+      justify-content: center;
+      padding-top: 8px;
+    }
+
+    .scroll-indicator-dot {
+      width: 4px;
+      height: 12px;
+      background-color: var(--accent);
+      border-radius: 9999px;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    /* ===== BOOKING SECTION ===== */
+    .booking-section {
+      padding: 5rem 0;
+      background-color: var(--muted);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--foreground);
+      margin-bottom: 1rem;
+    }
+
+    .section-header p {
+      color: var(--muted-foreground);
+      font-size: 1.125rem;
+    }
+
+    .booking-card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 10px 30px -10px rgba(230, 126, 34, 0.3);
+    }
+
+    .ride-types {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .ride-types {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .ride-type-btn {
+      padding: 1rem;
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .ride-type-btn:hover {
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .ride-type-btn.active {
+      border-color: var(--primary);
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .ride-type-btn i {
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin: 0 auto 0.5rem;
+    }
+
+    .ride-type-btn span {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group label i {
+      color: var(--primary);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .fare-estimate {
+      margin-top: 0.5rem;
+      padding: 1rem;
+      background: rgba(230, 126, 34, 0.1);
+      border-radius: var(--radius);
+    }
+
+    .fare-estimate p {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+
+    .fare-estimate .advance {
+      color: var(--primary);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1.25rem;
+      background: linear-gradient(135deg, var(--primary), hsl(14, 95%, 58%));
+      color: white;
+      font-size: 1.125rem;
+    }
+
+    .action-buttons {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .btn-whatsapp {
+      border: 2px solid #22c55e;
+      color: #16a34a;
+      background: transparent;
+    }
+
+    .btn-whatsapp:hover {
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .btn-call {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+    }
+
+    .btn-call:hover {
+      background: rgba(230, 126, 34, 0.1);
+    }
+
+    .booking-note {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--muted-foreground);
+      font-size: 0.875rem;
+    }
+
+    .booking-note a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ===== MOBILE APPS SECTION ===== */
+    .apps-section {
+      position: relative;
+      padding: 5rem 1rem;
+      overflow: hidden;
+    }
+
+    .apps-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(230, 126, 34, 0.05), rgba(255, 193, 7, 0.1), rgba(230, 126, 34, 0.05));
+    }
+
+    .apps-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.5rem;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 9999px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .apps-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .apps-header .subtitle {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-bottom: 0.5rem;
+    }
+
+    .apps-grid {
+      display: grid;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .apps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .app-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 2rem;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px -20px rgba(0,0,0,0.2);
+    }
+
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 128px;
+      height: 128px;
+      background: linear-gradient(to bottom right, rgba(230, 126, 34, 0.2), transparent);
+      border-radius: 0 0 0 100%;
+      transform: translate(32px, -32px);
+      transition: transform 0.5s ease;
+    }
+
+    .app-card:hover::before {
+      transform: translate(32px, -32px) scale(1.5);
+    }
+
+    .app-icon {
+      width: 112px;
+      height: 112px;
+      margin: 0 auto 1.5rem;
+      display: block;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+      transition: transform 0.3s ease;
+    }
+
+    .app-icon:hover {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    .app-card-content {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-card-content h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .app-card-content .app-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .app-card-content .app-desc {
+      color: var(--muted-foreground);
+    }
+
+    .app-features {
+      margin-bottom: 1.5rem;
+    }
+
+    .app-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .app-feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(230, 126, 34, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .app-feature-icon i {
+      width: 16px;
+      height: 16px;
+      color: var(--primary);
+    }
+
+    .btn-download {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+    }
+
+    .app-stats {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .app-stats span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-weight: 600;
+    }
+
+    .apps-cta {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .apps-cta-box {
+      display: inline-block;
+      background: linear-gradient(to right, rgba(230, 126, 34, 0.1), rgba(255, 193, 7, 0.1), rgba(230, 126, 34, 0.1));
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      border: 1px solid rgba(230, 126, 34, 0.2);
+    }
+
+    .apps-cta-box p:first-child {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .apps-cta-box p:last-child {
+      color: var(--muted-foreground);
+    }
+
+    .apps-cta-box .highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* ===== ABOUT SECTION ===== */
+    .about-section {
+      padding: 5rem 0;
+      background: linear-gradient(to bottom right, rgba(230, 126, 34, 0.05), rgba(255, 193, 7, 0.05));
+    }
+
+    .about-grid {
+      display: grid;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .about-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .about-content h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-content > p {
+      font-size: 1.125rem;
+      color: var(--muted-foreground);
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .mission-box {
+      background: rgba(230, 126, 34, 0.1);
+      border-left: 4px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 2rem;
+    }
+
+    .mission-box h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .about-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .about-feature {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: white;
+      border-radius: var(--radius);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .about-feature:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .about-feature i {
+      width: 32px;
+      height: 32px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .about-feature h4 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .about-feature p {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .about-visual {
+      position: relative;
+      text-align: center;
+    }
+
+    .about-visual img {
+      max-width: 400px;
+      width: 100%;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .about-visual::before,
+    .about-visual::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+    }
+
+    .about-visual::before {
+      top: 40px;
+      right: 40px;
+      width: 128px;
+      height: 128px;
+      background: rgba(255, 193, 7, 0.2);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .about-visual::after {
+      bottom: 40px;
+      left: 40px;
+      width: 160px;
+      height: 160px;
+      background: rgba(230, 126, 34, 0.2);
+      animation: glow 2s ease-in-out infinite 1s;
+    }
+
+    .cities-section {
+      margin-top: 4rem;
+      text-align: center;
+    }
+
+    .cities-section h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .cities-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .city-tag {
+      padding: 0.75rem 1.5rem;
+      background: white;
+      border-radius: 9999px;
+      border: 2px solid rgba(230, 126, 34, 0.2);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      color: var(--primary);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .city-tag:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(230, 126, 34, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* ===== WHY CHOOSE SECTION ===== */
+    .why-section {
+      padding: 5rem 0;
+      background-color: var(--background);
+    }
+
+    .features-grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .feature-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(230, 126, 34, 0.5);
+      transform: translateY(-8px);
+      box-shadow: 0 10px 30px -10px rgba(230, 126, 34, 0.3);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+      background: linear-gradient(135deg, var(--primary), hsl(14, 95%, 58%));
+    }
+
+    .feature-icon i {
+      width: 40px;
+      height: 40px;
+      transition: color 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon i {
+      color: white !important;
+    }
+
+    .feature-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      color: var(--muted-foreground);
+      line-height: 1.6;
+    }
+
+    /* ===== TESTIMONIALS SECTION ===== */
+    .testimonials-section {
+      position: relative;
+      padding: 5rem 0;
+      overflow: hidden;
+    }
+
+    .testimonials-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-image: url('/src/assets/testimonial-bg.jpg');
+    }
+
+    .testimonials-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(230, 126, 34, 0.95), rgba(230, 126, 34, 0.85));
+    }
+
+    .testimonials-content {
+      position: relative;
+      z-index: 10;
+    }
+
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .testimonials-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .testimonials-header p {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.125rem;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .testimonials-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .testimonial-card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 40px rgba(255, 193, 7, 0.3);
+    }
+
+    .quote-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--accent);
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+
+    .rating {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .rating i {
+      width: 20px;
+      height: 20px;
+      color: var(--accent);
+      fill: var(--accent);
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), hsl(14, 95%, 58%));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+
+    .author-info h4 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+    }
+
+    .author-info p {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background-color: var(--primary);
+      color: white;
+      padding: 3rem 0 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .footer-brand h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .footer-contact li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-contact i {
+      width: 20px;
+      height: 20px;
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .footer-contact a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-contact a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      background: var(--accent);
+      color: var(--primary);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+    }
+
+    .social-link i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .copyright {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.875rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .section-header h2,
+      .about-content h2,
+      .testimonials-header h2 {
+        font-size: 2rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+
+      .about-features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content container animate-fade-in">
+      <img src="/src/assets/cabbieo-logo.png" alt="Cabbieo Logo" class="hero-logo">
+      
+      <h1 class="font-poppins">
+        Har Safar Mein
+        <span>Apnapan</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Book local rides, intercity trips, or outstation cabs instantly
+        <span>Across Gwalior, Morena, Bhind & Beyond</span>
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#booking" class="btn btn-primary">
+          Book Your Ride
+          <i data-lucide="arrow-right"></i>
+        </a>
+        <a href="#" class="btn btn-secondary">
+          <i data-lucide="truck"></i>
+          Become a Driver
+        </a>
+        <a href="#about" class="btn btn-outline">
+          Learn More
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-value">6+</div>
+          <div class="stat-label">Cities Covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">10K+</div>
+          <div class="stat-label">Happy Riders</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">500+</div>
+          <div class="stat-label">Driver Partners</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">1000+</div>
+          <div class="stat-label">Daily Rides</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-indicator-inner">
+        <div class="scroll-indicator-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING SECTION -->
+  <section id="booking" class="booking-section">
+    <div class="container">
+      <div class="section-header animate-fade-in">
+        <h2 class="font-poppins">Book Your Ride</h2>
+        <p>Simple, fast, and reliable booking with 20% advance payment</p>
+      </div>
+
+      <div class="booking-card animate-fade-in">
+        <form id="bookingForm">
+          <div class="ride-types">
+            <button type="button" class="ride-type-btn" data-value="auto">
+              <i data-lucide="navigation"></i>
+              <span>E-Rickshaw</span>
+            </button>
+            <button type="button" class="ride-type-btn" data-value="bike">
+              <i data-lucide="bike"></i>
+              <span>Bike</span>
+            </button>
+            <button type="button" class="ride-type-btn" data-value="car">
+              <i data-lucide="car"></i>
+              <span>Car/Cab</span>
+            </button>
+            <button type="button" class="ride-type-btn" data-value="outstation">
+              <i data-lucide="truck"></i>
+              <span>Outstation</span>
+            </button>
+            <button type="button" class="ride-type-btn" data-value="suv">
+              <i data-lucide="ambulance"></i>
+              <span>SUV</span>
+            </button>
+          </div>
+
+          <div class="form-grid form-grid-2" style="margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label>
+                <i data-lucide="map-pin"></i>
+                Pickup Location *
+              </label>
+              <input type="text" id="pickup" placeholder="Enter pickup location" required>
+            </div>
+            <div class="form-group">
+              <label>
+                <i data-lucide="map-pin"></i>
+                Drop Location *
+              </label>
+              <input type="text" id="drop" placeholder="Enter drop location" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>
+              <i data-lucide="navigation"></i>
+              अनुमानित दूरी (किलोमीटर) *
+            </label>
+            <input type="number" id="distance" step="0.1" min="0" placeholder="दूरी दर्ज करें (जैसे: 5.5)" required>
+            <div class="fare-estimate" id="fareEstimate" style="display: none;">
+              <p><i data-lucide="dollar-sign"></i> अनुमानित किराया: ₹<span id="totalFare">0</span></p>
+              <p class="advance">20% Advance Payment: ₹<span id="advanceAmount">0</span></p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid-3" style="margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label>
+                <i data-lucide="calendar"></i>
+                Date
+              </label>
+              <input type="date" id="date">
+            </div>
+            <div class="form-group">
+              <label>Time</label>
+              <input type="time" id="time">
+            </div>
+            <div class="form-group">
+              <label>
+                <i data-lucide="phone"></i>
+                Phone Number *
+              </label>
+              <input type="tel" id="phone" placeholder="9876543210" maxlength="10" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Additional Notes (Optional)</label>
+            <textarea id="notes" rows="3" placeholder="Any special requirements or instructions..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-submit">
+            Pay ₹<span id="submitAdvance">0</span> & Confirm Booking
+          </button>
+
+          <div class="action-buttons">
+            <button type="button" class="btn btn-whatsapp" id="whatsappBtn">
+              <i data-lucide="message-circle"></i>
+              WhatsApp Confirmation
+            </button>
+            <a href="tel:+919876543210" class="btn btn-call">
+              <i data-lucide="phone-call"></i>
+              Call Now
+            </a>
+          </div>
+
+          <p class="booking-note">
+            💡 20% advance payment required to confirm booking<br>
+            Customer Care: <a href="tel:+919876543210">+91 98765 43210</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE APPS SECTION -->
+  <section class="apps-section">
+    <div class="container">
+      <div class="apps-header animate-fade-in">
+        <span class="badge">
+          <i data-lucide="download"></i>
+          Download Karo Aur Shuru Karo
+        </span>
+        <h2>Cabbieo Ki Duniya Mein Aaiye! 🚖</h2>
+        <p class="subtitle">Smart Travel Ka Smart Solution</p>
+        <p style="color: var(--muted-foreground);">Chahiye ride ya karna hai kamai? Humne banaya hai dono ke liye perfect app!</p>
+      </div>
+
+      <div class="apps-grid">
+        <!-- Customer App -->
+        <div class="app-card animate-fade-in">
+          <a href="https://play.google.com/store/apps/details?id=com.taxigo.proapp" target="_blank">
+            <img src="/src/assets/cabbieo-customer-icon.png" alt="Cabbieo Customer App" class="app-icon">
+          </a>
+          <div class="app-card-content">
+            <h3>Riders Ke Liye 🎯</h3>
+            <p class="app-name">Cabbieo - Book Auto, Cab & Bike</p>
+            <p class="app-desc">Kaheen bhi jaana ho, bas ek tap mein book karo</p>
+          </div>
+          <div class="app-features">
+            <div class="app-feature">
+              <div class="app-feature-icon"><i data-lucide="zap"></i></div>
+              <span>Instant booking with real-time tracking</span>
+            </div>
+            <div class="app-feature">
+              <div class="app-feature-icon"><i data-lucide="shield"></i></div>
+              <span>Safe rides with verified drivers</span>
+            </div>
+            <div class="app-feature">
+              <div class="app-feature-icon"><i data-lucide="indian-rupee"></i></div>
+              <span>Affordable rates, transparent pricing</span>
+            </div>
+          </div>
+          <a href="https://play.google.com/store/apps/details?id=com.taxigo.proapp" target="_blank" class="btn btn-primary btn-download">
+            <i data-lucide="download"></i>
+            Google Play Se Download Karo
+          </a>
+          <div class="app-stats">
+            <span><i data-lucide="star" style="fill: var(--accent); color: var(--accent);"></i> 4.5+</span>
+            <span><i data-lucide="users"></i> 50K+ Users</span>
+          </div>
+        </div>
+
+        <!-- Driver App -->
+        <div class="app-card animate-fade-in">
+          <a href="https://play.google.com/store/apps/details?id=com.taxigo.propilot" target="_blank">
+            <img src="/src/assets/cabbieo-driver-icon.png" alt="Cabbieo Driver App" class="app-icon">
+          </a>
+          <div class="app-card-content">
+            <h3>Drivers Ke Liye 💪</h3>
+            <p class="app-name" style="color: var(--accent);">Cabbieo Drive: Earn & Grow</p>
+            <p class="app-desc">Apni gaadi se shuru karo kamai ka naya safar</p>
+          </div>
+          <div class="app-features">
+            <div class="app-feature">
+              <div class="app-feature-icon" style="background: rgba(255, 193, 7, 0.1);"><i data-lucide="indian-rupee" style="color: var(--accent);"></i></div>
+              <span>Daily instant payments & cashouts</span>
+            </div>
+            <div class="app-feature">
+              <div class="app-feature-icon" style="background: rgba(255, 193, 7, 0.1);"><i data-lucide="zap" style="color: var(--accent);"></i></div>
+              <span>Maximum rides, maximum earnings</span>
+            </div>
+            <div class="app-feature">
+              <div class="app-feature-icon" style="background: rgba(255, 193, 7, 0.1);"><i data-lucide="shield" style="color: var(--accent);"></i></div>
+              <span>Insurance coverage & 24/7 support</span>
+            </div>
+          </div>
+          <a href="https://play.google.com/store/apps/details?id=com.taxigo.propilot" target="_blank" class="btn btn-secondary btn-download">
+            <i data-lucide="download"></i>
+            Google Play Se Download Karo
+          </a>
+          <div class="app-stats">
+            <span><i data-lucide="star" style="fill: var(--accent); color: var(--accent);"></i> 4.6+</span>
+            <span><i data-lucide="users"></i> 25K+ Drivers</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="apps-cta animate-fade-in">
+        <div class="apps-cta-box">
+          <p>🌐 Aasaan Booking • Bharosemand Rides • Zabardast Kamai</p>
+          <p>Join karo India ka <span class="highlight">fastest growing</span> transport network!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content animate-fade-in">
+          <h2 class="font-poppins">About CABBIEO</h2>
+          <p>CABBIEO एक Smart Local & Outstation Ride-Booking Platform है जो लोगों को जोड़ता है — Local e-Rickshaw, Bike, Cab, Ambulance, और Outstation Rides के माध्यम से।</p>
+          
+          <div class="mission-box">
+            <h3>Our Mission</h3>
+            <p>To make travel simpler, affordable, and people-driven — connecting every city with care and comfort.</p>
+          </div>
+
+          <div class="about-features">
+            <div class="about-feature">
+              <i data-lucide="target"></i>
+              <div>
+                <h4>Mission-Driven</h4>
+                <p>Purpose-led platform</p>
+              </div>
+            </div>
+            <div class="about-feature">
+              <i data-lucide="users"></i>
+              <div>
+                <h4>Community First</h4>
+                <p>Local at heart</p>
+              </div>
+            </div>
+            <div class="about-feature">
+              <i data-lucide="trending-up"></i>
+              <div>
+                <h4>Always Growing</h4>
+                <p>Expanding reach</p>
+              </div>
+            </div>
+            <div class="about-feature">
+              <i data-lucide="heart"></i>
+              <div>
+                <h4>Care & Trust</h4>
+                <p>Built on values</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-visual animate-fade-in">
+          <img src="/src/assets/rickshaw-icon.png" alt="CABBIEO Vehicle">
+        </div>
+      </div>
+
+      <div class="cities-section animate-fade-in">
+        <h3 class="font-poppins">Serving Across Chambal Region</h3>
+        <div class="cities-list">
+          <span class="city-tag">Gwalior</span>
+          <span class="city-tag">Morena</span>
+          <span class="city-tag">Bhind</span>
+          <span class="city-tag">Sheopur</span>
+          <span class="city-tag">Datia</span>
+          <span class="city-tag">Shivpuri</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE SECTION -->
+  <section class="why-section">
+    <div class="container">
+      <div class="section-header animate-fade-in">
+        <h2 class="font-poppins">Why Choose CABBIEO?</h2>
+        <p>We're not just a ride-booking platform. We're your travel companion.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card animate-fade-in">
+          <div class="feature-icon">
+            <i data-lucide="indian-rupee" style="color: var(--accent);"></i>
+          </div>
+          <h3>Affordable Fares</h3>
+          <p>Transparent pricing with no hidden charges. Pay what you see.</p>
+        </div>
+        <div class="feature-card animate-fade-in">
+          <div class="feature-icon">
+            <i data-lucide="shield" style="color: var(--primary);"></i>
+          </div>
+          <h3>Verified Drivers</h3>
+          <p>All our driver partners are verified and background-checked.</p>
+        </div>
+        <div class="feature-card animate-fade-in">
+          <div class="feature-icon">
+            <i data-lucide="clock" style="color: var(--accent);"></i>
+          </div>
+          <h3>24×7 Support</h3>
+          <p>Round-the-clock customer service for your peace of mind.</p>
+        </div>
+        <div class="feature-card animate-fade-in">
+          <div class="feature-icon">
+            <i data-lucide="users" style="color: var(--primary);"></i>
+          </div>
+          <h3>Local Community</h3>
+          <p>Supporting local drivers and strengthening our community.</p>
+        </div>
+        <div class="feature-card animate-fade-in">
+          <div class="feature-icon">
+            <i data-lucide="award" style="color: var(--accent);"></i>
+          </div>
+          <h3>Quality Service</h3>
+          <p>Consistently rated high by our happy customers.</p>
+        </div>
+        <div class="feature-card animate-fade-in">
+          <div class="feature-icon">
+            <i data-lucide="heart" style="color: var(--primary);"></i>
+          </div>
+          <h3>Trusted Platform</h3>
+          <p>Built with care for the people of Chambal region.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS SECTION -->
+  <section class="testimonials-section">
+    <div class="testimonials-bg"></div>
+    <div class="testimonials-overlay"></div>
+    
+    <div class="container testimonials-content">
+      <div class="testimonials-header animate-fade-in">
+        <h2 class="font-poppins">What Our Riders Say</h2>
+        <p>Real experiences from real people across Chambal region</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card animate-fade-in">
+          <i data-lucide="quote" class="quote-icon"></i>
+          <div class="rating">
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+          </div>
+          <p class="testimonial-text">"CABBIEO ने मेरे शहर का सफर और आसान बना दिया! हमेशा समय पर और सस्ती सेवा।"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">RK</div>
+            <div class="author-info">
+              <h4>Rajesh Kumar</h4>
+              <p>Gwalior</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card animate-fade-in">
+          <i data-lucide="quote" class="quote-icon"></i>
+          <div class="rating">
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+          </div>
+          <p class="testimonial-text">"बहुत ही विश्वसनीय सेवा। Ambulance service की वजह से emergency में काफी मदद मिली।"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PS</div>
+            <div class="author-info">
+              <h4>Priya Sharma</h4>
+              <p>Morena</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card animate-fade-in">
+          <i data-lucide="quote" class="quote-icon"></i>
+          <div class="rating">
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+          </div>
+          <p class="testimonial-text">"Driver partners बहुत अच्छे हैं। Outstation rides के लिए best option है।"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">AP</div>
+            <div class="author-info">
+              <h4>Amit Patel</h4>
+              <p>Bhind</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand animate-fade-in">
+          <h3>CABBIEO</h3>
+          <p>Har Safar Mein Apnapan</p>
+          <p style="font-size: 0.875rem; color: rgba(255,255,255,0.7);">Your trusted local & outstation ride partner across Chambal region</p>
+        </div>
+
+        <div>
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Alternatives</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Solutions</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Our Services</h4>
+          <ul class="footer-links">
+            <li>Local E-Rickshaw Rides</li>
+            <li>Bike Rides</li>
+            <li>Car/Cab Bookings</li>
+            <li>Outstation Trips</li>
+            <li>Ambulance Services</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contact Us</h4>
+          <ul class="footer-contact">
+            <li>
+              <i data-lucide="phone"></i>
+              <a href="tel:+919876543210">+91 98765 43210</a>
+            </li>
+            <li>
+              <i data-lucide="mail"></i>
+              <a href="mailto:support@cabbieo.com">support@cabbieo.com</a>
+            </li>
+            <li>
+              <i data-lucide="map-pin"></i>
+              <span>Gwalior, Madhya Pradesh</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="social-links">
+          <a href="https://www.facebook.com/Cabbieo" target="_blank" class="social-link" aria-label="Facebook">
+            <i data-lucide="facebook"></i>
+          </a>
+          <a href="https://www.instagram.com/cabbieollp/" target="_blank" class="social-link" aria-label="Instagram">
+            <i data-lucide="instagram"></i>
+          </a>
+          <a href="https://www.youtube.com/@CABBIEO" target="_blank" class="social-link" aria-label="YouTube">
+            <i data-lucide="youtube"></i>
+          </a>
+        </div>
+        <p class="copyright">© 2025 CABBIEO. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Pricing configuration (simulating database)
+    const pricing = {
+      auto: { baseFare: 20, ratePerKm: 8 },
+      bike: { baseFare: 15, ratePerKm: 6 },
+      car: { baseFare: 50, ratePerKm: 12 },
+      outstation: { baseFare: 100, ratePerKm: 15 },
+      suv: { baseFare: 80, ratePerKm: 18 }
+    };
+
+    let selectedRideType = '';
+    const CUSTOMER_CARE_PHONE = '+919876543210';
+
+    // Ride type selection
+    document.querySelectorAll('.ride-type-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.ride-type-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedRideType = this.dataset.value;
+        calculateFare();
+      });
+    });
+
+    // Calculate fare on distance input
+    document.getElementById('distance').addEventListener('input', calculateFare);
+
+    function calculateFare() {
+      const distance = parseFloat(document.getElementById('distance').value);
+      const fareEstimate = document.getElementById('fareEstimate');
+      const totalFareEl = document.getElementById('totalFare');
+      const advanceAmountEl = document.getElementById('advanceAmount');
+      const submitAdvanceEl = document.getElementById('submitAdvance');
+
+      if (!selectedRideType || !distance || distance <= 0) {
+        fareEstimate.style.display = 'none';
+        submitAdvanceEl.textContent = '0';
+        return;
+      }
+
+      const config = pricing[selectedRideType];
+      if (!config) return;
+
+      const totalFare = config.baseFare + (distance * config.ratePerKm);
+      const advance = Math.round(totalFare * 0.2);
+
+      totalFareEl.textContent = Math.round(totalFare);
+      advanceAmountEl.textContent = advance;
+      submitAdvanceEl.textContent = advance;
+      fareEstimate.style.display = 'block';
+    }
+
+    // Form submission
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const pickup = document.getElementById('pickup').value;
+      const drop = document.getElementById('drop').value;
+      const phone = document.getElementById('phone').value;
+      const distance = document.getElementById('distance').value;
+
+      // Validate
+      if (!pickup || !drop || !selectedRideType || !phone || !distance) {
+        alert('कृपया सभी आवश्यक फ़ील्ड भरें');
+        return;
+      }
+
+      // Validate phone
+      const phoneRegex = /^[6-9]\d{9}$/;
+      if (!phoneRegex.test(phone)) {
+        alert('कृपया 10 अंकों का वैध फ़ोन नंबर दर्ज करें');
+        return;
+      }
+
+      // In a real app, this would trigger payment
+      alert('✅ बुकिंग रिक्वेस्ट भेजी गई!\n\nहम जल्द ही आपसे संपर्क करेंगे।');
+    });
+
+    // WhatsApp button
+    document.getElementById('whatsappBtn').addEventListener('click', function() {
+      const pickup = document.getElementById('pickup').value;
+      const drop = document.getElementById('drop').value;
+      const phone = document.getElementById('phone').value;
+      const distance = document.getElementById('distance').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const notes = document.getElementById('notes').value;
+
+      if (!pickup || !drop || !selectedRideType || !phone) {
+        alert('कृपया पहले फॉर्म भरें');
+        return;
+      }
+
+      const totalFare = document.getElementById('totalFare').textContent;
+
+      const message = `Hello CABBIEO 👋
+I'd like to book a ride.
+Pickup: ${pickup}
+Drop: ${drop}
+Ride Type: ${selectedRideType}
+${distance ? `Distance: ${distance} km` : ''}
+${totalFare !== '0' ? `Estimated Fare: ₹${totalFare}` : ''}
+Date & Time: ${date || 'ASAP'} ${time || ''}
+Contact: ${phone}
+${notes ? `Notes: ${notes}` : ''}`;
+
+      const whatsappUrl = `https://wa.me/${CUSTOMER_CARE_PHONE.replace(/\+/g, '')}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Set minimum date for booking
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').setAttribute('min', today);
+
+    // Animate elements on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-fade-in').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
