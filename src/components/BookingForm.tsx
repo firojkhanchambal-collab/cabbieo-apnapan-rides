@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, MapPin, Phone, Car, Bike, Truck, Ambulance, Navigation, MessageCircle, PhoneCall, DollarSign, Sparkles, Check, Clock, Loader2, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Phone, Navigation, MessageCircle, PhoneCall, DollarSign, Sparkles, Check, Clock, Loader2, ArrowRight, Route, Timer } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useRazorpay } from "@/hooks/useRazorpay";
+import { useMapboxDistance } from "@/hooks/useMapboxDistance";
+import { BikeIcon, ERickshawIcon, OutstationIcon, AmbulanceIcon } from "@/components/icons/VehicleIcons";
 
 interface PricingConfig {
   vehicle_type: string;
@@ -30,25 +32,58 @@ const BookingForm = () => {
   const [pricing, setPricing] = useState<PricingConfig[]>([]);
   const [estimatedFare, setEstimatedFare] = useState<number | null>(null);
   const [advanceAmount, setAdvanceAmount] = useState<number | null>(null);
+  const [estimatedDuration, setEstimatedDuration] = useState<number | null>(null);
+  const [mapboxToken, setMapboxToken] = useState<string>("");
+  const [showPickupSuggestions, setShowPickupSuggestions] = useState(false);
+  const [showDropSuggestions, setShowDropSuggestions] = useState(false);
+  const [isCalculatingDistance, setIsCalculatingDistance] = useState(false);
+  
+  const pickupRef = useRef<HTMLDivElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
+  
   const { isLoaded: isRazorpayLoaded } = useRazorpay();
+  const { 
+    calculateDistance, 
+    getAddressSuggestions, 
+    suggestions, 
+    clearSuggestions 
+  } = useMapboxDistance(mapboxToken);
 
   const CUSTOMER_CARE_PHONE = "+919876543210";
 
   const rideTypes = [
-    { value: "auto", label: "E-Rickshaw", icon: Navigation },
-    { value: "bike", label: "Bike", icon: Bike },
-    { value: "car", label: "Car/Cab", icon: Car },
-    { value: "outstation", label: "Outstation", icon: Truck },
-    { value: "suv", label: "SUV", icon: Ambulance },
+    { value: "bike", label: "Bike", icon: BikeIcon, color: "from-emerald-500 to-green-600", bgColor: "bg-emerald-50", borderColor: "border-emerald-300", price: "₹19" },
+    { value: "auto", label: "E-Rickshaw", icon: ERickshawIcon, color: "from-blue-500 to-cyan-600", bgColor: "bg-blue-50", borderColor: "border-blue-300", price: "₹29" },
+    { value: "outstation", label: "Outstation", icon: OutstationIcon, color: "from-violet-500 to-purple-600", bgColor: "bg-violet-50", borderColor: "border-violet-300", price: "₹99" },
+    { value: "ambulance", label: "Ambulance", icon: AmbulanceIcon, color: "from-red-500 to-rose-600", bgColor: "bg-red-50", borderColor: "border-red-300", price: "₹999" },
   ];
 
   useEffect(() => {
     fetchPricing();
+    // Check for Mapbox token in localStorage or prompt user
+    const savedToken = localStorage.getItem('mapbox_token');
+    if (savedToken) {
+      setMapboxToken(savedToken);
+    }
   }, []);
 
   useEffect(() => {
     calculateFare();
   }, [formData.rideType, formData.distance, pricing]);
+
+  // Click outside to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (pickupRef.current && !pickupRef.current.contains(event.target as Node)) {
+        setShowPickupSuggestions(false);
+      }
+      if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
+        setShowDropSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchPricing = async () => {
     try {
@@ -81,10 +116,54 @@ const BookingForm = () => {
     if (!config) return;
 
     const fare = config.base_fare + (distance * config.rate_per_km);
-    const advance = Math.round(fare * 0.2); // 20% advance
+    const advance = Math.round(fare * 0.2);
 
     setEstimatedFare(fare);
     setAdvanceAmount(advance);
+  };
+
+  // Auto-calculate distance when both locations are filled
+  const handleCalculateDistance = useCallback(async () => {
+    if (!formData.pickup || !formData.drop || !mapboxToken) return;
+    
+    setIsCalculatingDistance(true);
+    const result = await calculateDistance(formData.pickup, formData.drop);
+    setIsCalculatingDistance(false);
+    
+    if (result) {
+      setFormData(prev => ({ ...prev, distance: result.distance.toString() }));
+      setEstimatedDuration(result.duration);
+      toast.success(`Distance: ${result.distance} km | ETA: ${result.duration} mins`);
+    }
+  }, [formData.pickup, formData.drop, mapboxToken, calculateDistance]);
+
+  // Debounced address suggestions
+  const handlePickupChange = async (value: string) => {
+    setFormData(prev => ({ ...prev, pickup: value }));
+    if (mapboxToken && value.length >= 3) {
+      await getAddressSuggestions(value, 'pickup');
+      setShowPickupSuggestions(true);
+    }
+  };
+
+  const handleDropChange = async (value: string) => {
+    setFormData(prev => ({ ...prev, drop: value }));
+    if (mapboxToken && value.length >= 3) {
+      await getAddressSuggestions(value, 'drop');
+      setShowDropSuggestions(true);
+    }
+  };
+
+  const selectPickupSuggestion = (placeName: string) => {
+    setFormData(prev => ({ ...prev, pickup: placeName }));
+    setShowPickupSuggestions(false);
+    clearSuggestions('pickup');
+  };
+
+  const selectDropSuggestion = (placeName: string) => {
+    setFormData(prev => ({ ...prev, drop: placeName }));
+    setShowDropSuggestions(false);
+    clearSuggestions('drop');
   };
 
   const handlePayment = async () => {
@@ -101,7 +180,6 @@ const BookingForm = () => {
     try {
       setIsSubmitting(true);
 
-      // Create Razorpay order
       const { data: orderData, error: orderError } = await supabase.functions.invoke(
         'create-razorpay-order',
         {
@@ -155,7 +233,6 @@ const BookingForm = () => {
 
   const verifyPayment = async (paymentResponse: any, orderId: string) => {
     try {
-      // First create the booking
       const { data: bookingData, error: bookingError } = await supabase
         .from("bookings")
         .insert({
@@ -176,7 +253,6 @@ const BookingForm = () => {
 
       if (bookingError) throw bookingError;
 
-      // Verify payment
       const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
         'verify-razorpay-payment',
         {
@@ -198,7 +274,6 @@ const BookingForm = () => {
         { duration: 8000 }
       );
 
-      // Reset form
       setFormData({
         pickup: "",
         drop: "",
@@ -211,6 +286,7 @@ const BookingForm = () => {
       });
       setEstimatedFare(null);
       setAdvanceAmount(null);
+      setEstimatedDuration(null);
     } catch (error) {
       console.error("Verification error:", error);
       toast.error("Payment verification failed. Please contact support.");
@@ -222,20 +298,17 @@ const BookingForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate required fields
     if (!formData.pickup || !formData.drop || !formData.rideType || !formData.phone || !formData.distance) {
       toast.error("कृपया सभी आवश्यक फ़ील्ड भरें");
       return;
     }
 
-    // Validate phone number (10 digits, India format)
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(formData.phone)) {
       toast.error("कृपया 10 अंकों का वैध फ़ोन नंबर दर्ज करें");
       return;
     }
 
-    // Proceed to payment
     await handlePayment();
   };
 
@@ -245,19 +318,28 @@ const BookingForm = () => {
       return;
     }
 
+    const rideLabel = rideTypes.find(r => r.value === formData.rideType)?.label || formData.rideType;
+
     const message = `Hello CABBIEO 👋
 I'd like to book a ride.
-Pickup: ${formData.pickup}
-Drop: ${formData.drop}
-Ride Type: ${formData.rideType}
-${formData.distance ? `Distance: ${formData.distance} km` : ''}
-${estimatedFare ? `Estimated Fare: ₹${estimatedFare}` : ''}
-Date & Time: ${formData.date || 'ASAP'} ${formData.time || ''}
-Contact: ${formData.phone}
-${formData.notes ? `Notes: ${formData.notes}` : ''}`;
+🚗 Ride Type: ${rideLabel}
+📍 Pickup: ${formData.pickup}
+🎯 Drop: ${formData.drop}
+${formData.distance ? `📏 Distance: ${formData.distance} km` : ''}
+${estimatedDuration ? `⏱️ ETA: ${estimatedDuration} mins` : ''}
+${estimatedFare ? `💰 Estimated Fare: ₹${estimatedFare}` : ''}
+📅 Date & Time: ${formData.date || 'ASAP'} ${formData.time || ''}
+📞 Contact: ${formData.phone}
+${formData.notes ? `📝 Notes: ${formData.notes}` : ''}`;
 
     const whatsappUrl = `https://wa.me/${CUSTOMER_CARE_PHONE.replace(/\+/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleSaveMapboxToken = (token: string) => {
+    localStorage.setItem('mapbox_token', token);
+    setMapboxToken(token);
+    toast.success('Mapbox token saved!');
   };
 
   return (
@@ -279,23 +361,22 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
             🚗 Book Your Ride Now!
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Fast, safe & affordable rides at your fingertips ✨
+            Bike, E-Rickshaw, Outstation & Ambulance - Fast, safe & affordable rides at your fingertips ✨
           </p>
         </div>
 
         <Card className="max-w-4xl mx-auto shadow-2xl animate-slide-up border-2 border-primary/20 bg-card/80 backdrop-blur-sm rounded-3xl overflow-hidden">
-          {/* Animated Header Strip */}
           <div className="h-2 bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
           
           <CardContent className="p-6 md:p-10">
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Ride Type Selection - Playful Cards */}
+              {/* Ride Type Selection - Colorful Cards */}
               <div className="space-y-4">
                 <Label className="text-lg font-bold flex items-center gap-2">
-                  <Car className="w-5 h-5 text-primary animate-bounce" />
+                  <Sparkles className="w-5 h-5 text-primary" />
                   Choose Your Ride
                 </Label>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {rideTypes.map((type, index) => {
                     const Icon = type.icon;
                     const isSelected = formData.rideType === type.value;
@@ -304,32 +385,62 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                         key={type.value}
                         type="button"
                         onClick={() => setFormData({ ...formData, rideType: type.value })}
-                        className={`group relative p-5 rounded-2xl border-2 transition-all duration-300 transform hover:scale-110 hover:-rotate-2 ${
+                        className={`group relative p-5 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 ${
                           isSelected
-                            ? "border-primary bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/30"
-                            : "border-border bg-card hover:border-primary hover:shadow-lg"
+                            ? `${type.borderColor} bg-gradient-to-br ${type.color} text-white shadow-lg`
+                            : `border-border ${type.bgColor} hover:${type.borderColor} hover:shadow-lg`
                         }`}
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center animate-bounce">
-                            <Check className="w-4 h-4 text-accent-foreground" />
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                            <Check className="w-4 h-4 text-green-600" />
                           </div>
                         )}
-                        <Icon className={`w-8 h-8 mx-auto mb-2 transition-transform group-hover:scale-125 ${isSelected ? '' : 'group-hover:text-primary'}`} />
-                        <span className="text-sm font-bold block">{type.label}</span>
+                        <Icon className="w-12 h-12 mx-auto mb-3 transition-transform group-hover:scale-110" />
+                        <span className={`text-sm font-bold block ${isSelected ? 'text-white' : 'text-foreground'}`}>
+                          {type.label}
+                        </span>
+                        <span className={`text-xs mt-1 block ${isSelected ? 'text-white/80' : 'text-muted-foreground'}`}>
+                          from {type.price}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Location Fields - Fancy Design */}
+              {/* Mapbox Token Input (if not set) */}
+              {!mapboxToken && (
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                  <Label className="text-sm font-semibold text-amber-800 mb-2 block">
+                    🗺️ Enable Auto Distance Calculation
+                  </Label>
+                  <p className="text-xs text-amber-700 mb-3">
+                    Enter your Mapbox public token to automatically calculate distance. Get one free at{' '}
+                    <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">
+                      mapbox.com
+                    </a>
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="pk.ey..."
+                      className="flex-1 text-sm"
+                      onBlur={(e) => e.target.value && handleSaveMapboxToken(e.target.value)}
+                    />
+                    <Button type="button" size="sm" variant="outline">
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Location Fields with Autocomplete */}
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-3 group">
+                <div className="space-y-3 group relative" ref={pickupRef}>
                   <Label htmlFor="pickup" className="flex items-center gap-2 text-base font-semibold">
-                    <div className="p-2 bg-primary/10 rounded-lg group-focus-within:bg-primary group-focus-within:text-primary-foreground transition-colors">
-                      <MapPin className="w-4 h-4 text-primary group-focus-within:text-primary-foreground" />
+                    <div className="p-2 bg-emerald-100 rounded-lg">
+                      <MapPin className="w-4 h-4 text-emerald-600" />
                     </div>
                     Pickup Location *
                   </Label>
@@ -337,16 +448,34 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     id="pickup"
                     placeholder="📍 Where should we pick you up?"
                     value={formData.pickup}
-                    onChange={(e) => setFormData({ ...formData, pickup: e.target.value })}
-                    className="text-base h-14 rounded-xl border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all pl-4"
+                    onChange={(e) => handlePickupChange(e.target.value)}
+                    onFocus={() => suggestions.pickup.length > 0 && setShowPickupSuggestions(true)}
+                    className="text-base h-14 rounded-xl border-2 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all pl-4"
                     required
+                    autoComplete="off"
                   />
+                  {/* Pickup Suggestions Dropdown */}
+                  {showPickupSuggestions && suggestions.pickup.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white rounded-xl border shadow-xl max-h-60 overflow-y-auto">
+                      {suggestions.pickup.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className="w-full px-4 py-3 text-left hover:bg-muted/50 border-b last:border-b-0 text-sm"
+                          onClick={() => selectPickupSuggestion(suggestion.place_name)}
+                        >
+                          <MapPin className="w-4 h-4 inline mr-2 text-muted-foreground" />
+                          {suggestion.place_name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-3 group">
+                <div className="space-y-3 group relative" ref={dropRef}>
                   <Label htmlFor="drop" className="flex items-center gap-2 text-base font-semibold">
-                    <div className="p-2 bg-accent/10 rounded-lg group-focus-within:bg-accent transition-colors">
-                      <MapPin className="w-4 h-4 text-accent" />
+                    <div className="p-2 bg-rose-100 rounded-lg">
+                      <MapPin className="w-4 h-4 text-rose-600" />
                     </div>
                     Drop Location *
                   </Label>
@@ -354,53 +483,118 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     id="drop"
                     placeholder="🎯 Where are you headed?"
                     value={formData.drop}
-                    onChange={(e) => setFormData({ ...formData, drop: e.target.value })}
-                    className="text-base h-14 rounded-xl border-2 focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all pl-4"
+                    onChange={(e) => handleDropChange(e.target.value)}
+                    onFocus={() => suggestions.drop.length > 0 && setShowDropSuggestions(true)}
+                    className="text-base h-14 rounded-xl border-2 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all pl-4"
                     required
+                    autoComplete="off"
                   />
+                  {/* Drop Suggestions Dropdown */}
+                  {showDropSuggestions && suggestions.drop.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white rounded-xl border shadow-xl max-h-60 overflow-y-auto">
+                      {suggestions.drop.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className="w-full px-4 py-3 text-left hover:bg-muted/50 border-b last:border-b-0 text-sm"
+                          onClick={() => selectDropSuggestion(suggestion.place_name)}
+                        >
+                          <MapPin className="w-4 h-4 inline mr-2 text-muted-foreground" />
+                          {suggestion.place_name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Distance Input with Visual Feedback */}
-              <div className="space-y-3">
-                <Label htmlFor="distance" className="flex items-center gap-2 text-base font-semibold">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Navigation className="w-4 h-4 text-primary" />
-                  </div>
-                  अनुमानित दूरी (किलोमीटर) *
-                </Label>
-                <Input
-                  id="distance"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  placeholder="🛣️ दूरी दर्ज करें (जैसे: 5.5)"
-                  value={formData.distance}
-                  onChange={(e) => setFormData({ ...formData, distance: e.target.value })}
-                  className="text-base h-14 rounded-xl border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all"
-                  required
-                />
-                {estimatedFare && (
-                  <div className="mt-4 p-5 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 rounded-2xl border-2 border-primary/20 space-y-2 animate-fade-in">
-                    <p className="text-base font-bold flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-primary animate-pulse" />
-                      अनुमानित किराया: <span className="text-2xl text-primary">₹{estimatedFare}</span>
-                    </p>
-                    <div className="flex items-center gap-2 p-3 bg-primary rounded-xl text-primary-foreground">
-                      <Sparkles className="w-5 h-5 animate-spin" style={{ animationDuration: '3s' }} />
-                      <span className="font-bold">Pay only ₹{advanceAmount} now!</span>
-                      <span className="text-xs opacity-80">(20% advance)</span>
+              {/* Auto Calculate Distance Button */}
+              {mapboxToken && formData.pickup && formData.drop && (
+                <Button
+                  type="button"
+                  onClick={handleCalculateDistance}
+                  disabled={isCalculatingDistance}
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-4 rounded-xl font-semibold"
+                >
+                  {isCalculatingDistance ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Calculating Distance...
+                    </>
+                  ) : (
+                    <>
+                      <Route className="w-5 h-5 mr-2" />
+                      Auto Calculate Distance & Fare
+                    </>
+                  )}
+                </Button>
+              )}
+
+              {/* Distance & Duration Display */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="distance" className="flex items-center gap-2 text-base font-semibold">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Route className="w-4 h-4 text-blue-600" />
+                    </div>
+                    Estimated Distance (km) *
+                  </Label>
+                  <Input
+                    id="distance"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    placeholder="🛣️ Distance in km"
+                    value={formData.distance}
+                    onChange={(e) => setFormData({ ...formData, distance: e.target.value })}
+                    className="text-base h-14 rounded-xl border-2 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all"
+                    required
+                  />
+                </div>
+
+                {estimatedDuration && (
+                  <div className="space-y-3">
+                    <Label className="flex items-center gap-2 text-base font-semibold">
+                      <div className="p-2 bg-amber-100 rounded-lg">
+                        <Timer className="w-4 h-4 text-amber-600" />
+                      </div>
+                      Estimated Time
+                    </Label>
+                    <div className="h-14 rounded-xl border-2 border-amber-200 bg-amber-50 flex items-center px-4 text-lg font-semibold text-amber-700">
+                      ⏱️ {estimatedDuration} minutes
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Date, Time & Phone - Clean Layout */}
+              {/* Fare Display */}
+              {estimatedFare && (
+                <div className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 rounded-2xl border-2 border-primary/20 space-y-3 animate-fade-in">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <p className="text-base font-bold flex items-center gap-2">
+                        <DollarSign className="w-5 h-5 text-primary animate-pulse" />
+                        Estimated Fare
+                      </p>
+                      <p className="text-3xl font-bold text-primary">₹{estimatedFare}</p>
+                    </div>
+                    <div className="p-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        <span className="font-bold">Pay only ₹{advanceAmount} now!</span>
+                      </div>
+                      <span className="text-xs opacity-80">(20% advance booking)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Date, Time & Phone */}
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="space-y-3">
                   <Label htmlFor="date" className="flex items-center gap-2 text-base font-semibold">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Calendar className="w-4 h-4 text-primary" />
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <Calendar className="w-4 h-4 text-purple-600" />
                     </div>
                     Date
                   </Label>
@@ -410,14 +604,14 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     min={new Date().toISOString().split('T')[0]}
-                    className="h-14 rounded-xl border-2 focus:border-primary"
+                    className="h-14 rounded-xl border-2 focus:border-purple-500"
                   />
                 </div>
 
                 <div className="space-y-3">
                   <Label htmlFor="time" className="flex items-center gap-2 text-base font-semibold">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Clock className="w-4 h-4 text-primary" />
+                    <div className="p-2 bg-indigo-100 rounded-lg">
+                      <Clock className="w-4 h-4 text-indigo-600" />
                     </div>
                     Time
                   </Label>
@@ -426,104 +620,91 @@ ${formData.notes ? `Notes: ${formData.notes}` : ''}`;
                     type="time"
                     value={formData.time}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="h-14 rounded-xl border-2 focus:border-primary"
+                    className="h-14 rounded-xl border-2 focus:border-indigo-500"
                   />
                 </div>
 
                 <div className="space-y-3">
                   <Label htmlFor="phone" className="flex items-center gap-2 text-base font-semibold">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Phone className="w-4 h-4 text-primary" />
+                    <div className="p-2 bg-teal-100 rounded-lg">
+                      <Phone className="w-4 h-4 text-teal-600" />
                     </div>
-                    Phone *
+                    Phone Number *
                   </Label>
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="📱 9876543210"
+                    placeholder="📱 10-digit mobile number"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    maxLength={10}
-                    className="h-14 rounded-xl border-2 focus:border-primary"
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                    className="h-14 rounded-xl border-2 focus:border-teal-500"
                     required
+                    maxLength={10}
                   />
                 </div>
               </div>
 
-              {/* Additional Notes */}
+              {/* Notes */}
               <div className="space-y-3">
-                <Label htmlFor="notes" className="text-base font-semibold">📝 Additional Notes (Optional)</Label>
+                <Label htmlFor="notes" className="text-base font-semibold">
+                  📝 Additional Notes (Optional)
+                </Label>
                 <Textarea
                   id="notes"
-                  placeholder="Any special requirements or instructions..."
+                  placeholder="Any special instructions? (e.g., landmark, accessibility needs)"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  rows={3}
-                  className="rounded-xl border-2 focus:border-primary resize-none"
+                  className="rounded-xl border-2 focus:border-primary min-h-[80px]"
                 />
               </div>
 
-              {/* Action Buttons - Eye-catching */}
-              <div className="space-y-4 pt-4">
-                <Button 
-                  type="submit" 
-                  size="lg" 
-                  disabled={isSubmitting || !advanceAmount}
-                  className="w-full bg-gradient-to-r from-primary via-primary to-accent hover:opacity-90 font-poppins font-bold text-xl py-8 rounded-2xl shadow-xl shadow-primary/30 disabled:opacity-50 transition-all hover:scale-[1.02] hover:shadow-2xl group"
+              {/* Action Buttons */}
+              <div className="space-y-4">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !formData.pickup || !formData.drop || !formData.rideType || !formData.phone || !formData.distance}
+                  className="w-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] hover:bg-[position:right_center] text-white py-6 text-lg rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-500 group"
                 >
                   {isSubmitting ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="w-6 h-6 animate-spin" />
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                       Processing...
-                    </span>
+                    </>
                   ) : (
-                    <span className="flex items-center gap-3">
-                      <Sparkles className="w-6 h-6 group-hover:animate-spin" />
-                      Pay ₹{advanceAmount || 0} & Book Now!
-                      <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
-                    </span>
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2 group-hover:animate-spin" />
+                      Book Now & Pay ₹{advanceAmount || '---'} Advance
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </>
                   )}
                 </Button>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <Button
                     type="button"
                     variant="outline"
-                    size="lg"
                     onClick={handleWhatsAppConfirmation}
-                    className="w-full border-2 border-green-500 text-green-600 hover:bg-green-500 hover:text-white font-bold py-6 rounded-2xl transition-all hover:scale-105 group"
+                    className="h-14 rounded-xl border-2 border-green-500 text-green-600 hover:bg-green-50 font-semibold group"
                   >
-                    <MessageCircle className="w-6 h-6 mr-2 group-hover:animate-bounce" />
-                    WhatsApp Book
+                    <MessageCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                    Book via WhatsApp
                   </Button>
-
                   <Button
                     type="button"
                     variant="outline"
-                    size="lg"
-                    asChild
-                    className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold py-6 rounded-2xl transition-all hover:scale-105 group"
+                    onClick={() => window.location.href = `tel:${CUSTOMER_CARE_PHONE}`}
+                    className="h-14 rounded-xl border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-semibold group"
                   >
-                    <a href={`tel:${CUSTOMER_CARE_PHONE}`}>
-                      <PhoneCall className="w-6 h-6 mr-2 group-hover:animate-bounce" />
-                      Call to Book
-                    </a>
+                    <PhoneCall className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                    Call to Book
                   </Button>
                 </div>
               </div>
 
-              {/* Footer Info */}
-              <div className="text-center p-4 bg-muted/50 rounded-2xl">
-                <p className="text-sm text-muted-foreground flex items-center justify-center gap-2 flex-wrap">
-                  <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full font-semibold">
-                    💡 20% advance only
-                  </span>
-                  <span>•</span>
-                  <span>Customer Care:</span>
-                  <a href={`tel:${CUSTOMER_CARE_PHONE}`} className="text-primary hover:underline font-bold">
-                    {CUSTOMER_CARE_PHONE}
-                  </a>
-                </p>
+              {/* Trust Footer */}
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4 border-t">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span>Safe & Secure Payments | 24/7 Support | GPS Tracked Rides</span>
               </div>
             </form>
           </CardContent>
