@@ -1,11 +1,8 @@
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  return (
-    <footer className="bg-primary text-white">
+  return <footer className="bg-primary text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
@@ -96,9 +93,8 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                <span className="text-white/80">
-                  Gwalior, Madhya Pradesh
-                </span>
+                <span className="text-white/80">Palpur Colony Dack Bangla Road,Sabalgarh,Morena
+Madhya Pradesh -476229</span>
               </li>
             </ul>
           </div>
@@ -109,31 +105,13 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Social Links */}
             <div className="flex gap-4">
-              <a 
-                href="https://www.facebook.com/Cabbieo" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow"
-                aria-label="Facebook"
-              >
+              <a href="https://www.facebook.com/Cabbieo" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow" aria-label="Facebook">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a 
-                href="https://www.instagram.com/cabbieollp/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow"
-                aria-label="Instagram"
-              >
+              <a href="https://www.instagram.com/cabbieollp/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow" aria-label="Instagram">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a 
-                href="https://www.youtube.com/@CABBIEO" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow"
-                aria-label="YouTube"
-              >
+              <a href="https://www.youtube.com/@CABBIEO" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent hover:text-primary flex items-center justify-center transition-all hover:scale-110 shadow-glow" aria-label="YouTube">
                 <Youtube className="w-5 h-5" />
               </a>
             </div>
@@ -145,8 +123,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
