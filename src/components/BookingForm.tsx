@@ -49,7 +49,8 @@ const BookingForm = () => {
     clearSuggestions 
   } = useMapboxDistance(mapboxToken);
 
-  const CUSTOMER_CARE_PHONE = "+919876543210";
+  const WHATSAPP_PHONE = "918109185295";
+  const CALL_CENTER_PHONE = "011-69652647";
 
   const rideTypes = [
     { value: "bike", label: "Bike", icon: BikeIcon, color: "from-emerald-500 to-green-600", bgColor: "bg-emerald-50", borderColor: "border-emerald-300", price: "₹19" },
@@ -332,7 +333,7 @@ ${estimatedFare ? `💰 Estimated Fare: ₹${estimatedFare}` : ''}
 📞 Contact: ${formData.phone}
 ${formData.notes ? `📝 Notes: ${formData.notes}` : ''}`;
 
-    const whatsappUrl = `https://wa.me/${CUSTOMER_CARE_PHONE.replace(/\+/g, '')}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -692,7 +693,7 @@ ${formData.notes ? `📝 Notes: ${formData.notes}` : ''}`;
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => window.location.href = `tel:${CUSTOMER_CARE_PHONE}`}
+                    onClick={() => window.location.href = `tel:${CALL_CENTER_PHONE}`}
                     className="h-14 rounded-xl border-2 border-blue-500 text-blue-600 hover:bg-blue-50 font-semibold group"
                   >
                     <PhoneCall className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />

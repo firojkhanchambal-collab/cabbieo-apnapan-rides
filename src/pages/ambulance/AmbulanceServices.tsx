@@ -22,7 +22,8 @@ import Footer from '@/components/Footer';
 import StickyCtaButtons from '@/components/StickyCtaButtons';
 
 const AmbulanceServices = () => {
-  const EMERGENCY_PHONE = "+919876543210";
+  const EMERGENCY_PHONE = "011-69652647";
+  const WHATSAPP_PHONE = "918109185295";
 
   const ambulanceTypes = [
     {
