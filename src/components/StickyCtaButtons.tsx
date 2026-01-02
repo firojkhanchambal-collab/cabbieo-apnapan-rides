@@ -2,11 +2,11 @@ import { Phone, MessageCircle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const StickyCtaButtons = () => {
-  const EMERGENCY_PHONE = "+919876543210";
-  const WHATSAPP_PHONE = "919876543210";
+  const CALL_CENTER_PHONE = "011-69652647";
+  const WHATSAPP_PHONE = "918109185295";
 
-  const handleEmergencyCall = () => {
-    window.location.href = `tel:${EMERGENCY_PHONE}`;
+  const handleCallCenter = () => {
+    window.location.href = `tel:${CALL_CENTER_PHONE}`;
   };
 
   const handleWhatsApp = () => {
@@ -27,7 +27,7 @@ const StickyCtaButtons = () => {
       <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-50 flex-col gap-2">
         {/* Emergency Ambulance Button */}
         <Button
-          onClick={handleEmergencyCall}
+          onClick={handleCallCenter}
           className="group relative bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-l-xl rounded-r-none px-4 py-6 shadow-2xl animate-pulse hover:animate-none transition-all duration-300 hover:pr-6"
           aria-label="Emergency Ambulance Call"
         >
@@ -39,7 +39,7 @@ const StickyCtaButtons = () => {
 
         {/* Call Now Button */}
         <Button
-          onClick={handleEmergencyCall}
+          onClick={handleCallCenter}
           className="group bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white rounded-l-xl rounded-r-none px-4 py-6 shadow-xl transition-all duration-300 hover:pr-6"
           aria-label="Call Now"
         >
@@ -67,7 +67,7 @@ const StickyCtaButtons = () => {
         <div className="flex items-center justify-around p-2 gap-2">
           {/* Emergency Button */}
           <Button
-            onClick={handleEmergencyCall}
+            onClick={handleCallCenter}
             className="flex-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white py-3 rounded-xl shadow-lg"
             aria-label="Emergency Call"
           >
@@ -88,7 +88,7 @@ const StickyCtaButtons = () => {
 
           {/* Call Button */}
           <Button
-            onClick={handleEmergencyCall}
+            onClick={handleCallCenter}
             className="flex-1 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white py-3 rounded-xl shadow-lg"
             aria-label="Call"
           >
