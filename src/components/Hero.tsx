@@ -30,13 +30,16 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center animate-fade-in">
-        {/* Logo - moved up */}
-        <div className="-mt-16 mb-4 animate-slide-up flex justify-center">
+        {/* Logo + Brand Name - Logo as "C" */}
+        <div className="-mt-16 mb-4 animate-slide-up flex justify-center items-center">
           <img 
             src={cabbieoLogo} 
             alt="Cabbieo Logo" 
-            className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 drop-shadow-2xl animate-float"
+            className="w-20 h-20 md:w-28 md:h-28 lg:w-36 lg:h-36 drop-shadow-2xl animate-float"
           />
+          <span className="font-poppins font-bold text-5xl md:text-7xl lg:text-8xl text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] -ml-2 md:-ml-3">
+            abbieo
+          </span>
         </div>
         
         {/* Headline - positioned below logo */}
