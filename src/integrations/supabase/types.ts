@@ -82,6 +82,36 @@ export type Database = {
           },
         ]
       }
+      customer_loyalty: {
+        Row: {
+          created_at: string
+          discount_percentage: number
+          email: string | null
+          id: string
+          phone: string
+          total_bookings: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discount_percentage?: number
+          email?: string | null
+          id?: string
+          phone: string
+          total_bookings?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discount_percentage?: number
+          email?: string | null
+          id?: string
+          phone?: string
+          total_bookings?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       driver_notifications: {
         Row: {
           created_at: string
@@ -171,6 +201,350 @@ export type Database = {
         }
         Relationships: []
       }
+      package_booked_seats: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          passenger_gender: string | null
+          passenger_name: string | null
+          seat_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          passenger_gender?: string | null
+          passenger_name?: string | null
+          seat_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          passenger_gender?: string | null
+          passenger_name?: string | null
+          seat_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "package_booked_seats_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "package_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "package_booked_seats_seat_id_fkey"
+            columns: ["seat_id"]
+            isOneToOne: false
+            referencedRelation: "package_seats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      package_bookings: {
+        Row: {
+          advance_amount: number
+          booking_id: string
+          booking_status: Database["public"]["Enums"]["package_booking_status"]
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string
+          id: string
+          is_family_booking: boolean
+          is_women_booking: boolean
+          loyalty_discount: number
+          notes: string | null
+          package_id: string
+          paid_amount: number
+          payment_status: Database["public"]["Enums"]["package_payment_status"]
+          pickup_point_id: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          advance_amount: number
+          booking_id: string
+          booking_status?: Database["public"]["Enums"]["package_booking_status"]
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone: string
+          id?: string
+          is_family_booking?: boolean
+          is_women_booking?: boolean
+          loyalty_discount?: number
+          notes?: string | null
+          package_id: string
+          paid_amount?: number
+          payment_status?: Database["public"]["Enums"]["package_payment_status"]
+          pickup_point_id?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          advance_amount?: number
+          booking_id?: string
+          booking_status?: Database["public"]["Enums"]["package_booking_status"]
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          is_family_booking?: boolean
+          is_women_booking?: boolean
+          loyalty_discount?: number
+          notes?: string | null
+          package_id?: string
+          paid_amount?: number
+          payment_status?: Database["public"]["Enums"]["package_payment_status"]
+          pickup_point_id?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "package_bookings_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "package_bookings_pickup_point_id_fkey"
+            columns: ["pickup_point_id"]
+            isOneToOne: false
+            referencedRelation: "pickup_points"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      package_routes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          stops: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          stops?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          stops?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      package_seats: {
+        Row: {
+          created_at: string
+          id: string
+          is_blocked: boolean
+          package_id: string
+          price: number
+          seat_col: number
+          seat_number: string
+          seat_row: number
+          seat_type: Database["public"]["Enums"]["seat_type"]
+          status: Database["public"]["Enums"]["seat_status"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_blocked?: boolean
+          package_id: string
+          price: number
+          seat_col: number
+          seat_number: string
+          seat_row: number
+          seat_type?: Database["public"]["Enums"]["seat_type"]
+          status?: Database["public"]["Enums"]["seat_status"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_blocked?: boolean
+          package_id?: string
+          price?: number
+          seat_col?: number
+          seat_number?: string
+          seat_row?: number
+          seat_type?: Database["public"]["Enums"]["seat_type"]
+          status?: Database["public"]["Enums"]["seat_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "package_seats_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      package_vehicles: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          seat_layout: Json
+          total_seats: number
+          vehicle_type: Database["public"]["Enums"]["package_vehicle_type"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          seat_layout?: Json
+          total_seats: number
+          vehicle_type: Database["public"]["Enums"]["package_vehicle_type"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          seat_layout?: Json
+          total_seats?: number
+          vehicle_type?: Database["public"]["Enums"]["package_vehicle_type"]
+        }
+        Relationships: []
+      }
+      packages: {
+        Row: {
+          advance_percentage: number
+          available_seats: number
+          base_price: number
+          created_at: string
+          departure_date: string
+          departure_time: string
+          facilities_excluded: string[] | null
+          facilities_included: string[] | null
+          id: string
+          is_active: boolean
+          is_women_only: boolean
+          middle_seat_discount: number
+          return_date: string | null
+          return_time: string | null
+          route_id: string
+          tags: string[] | null
+          total_seats: number
+          updated_at: string
+          vehicle_id: string
+          window_seat_extra: number
+        }
+        Insert: {
+          advance_percentage?: number
+          available_seats: number
+          base_price?: number
+          created_at?: string
+          departure_date: string
+          departure_time: string
+          facilities_excluded?: string[] | null
+          facilities_included?: string[] | null
+          id?: string
+          is_active?: boolean
+          is_women_only?: boolean
+          middle_seat_discount?: number
+          return_date?: string | null
+          return_time?: string | null
+          route_id: string
+          tags?: string[] | null
+          total_seats: number
+          updated_at?: string
+          vehicle_id: string
+          window_seat_extra?: number
+        }
+        Update: {
+          advance_percentage?: number
+          available_seats?: number
+          base_price?: number
+          created_at?: string
+          departure_date?: string
+          departure_time?: string
+          facilities_excluded?: string[] | null
+          facilities_included?: string[] | null
+          id?: string
+          is_active?: boolean
+          is_women_only?: boolean
+          middle_seat_discount?: number
+          return_date?: string | null
+          return_time?: string | null
+          route_id?: string
+          tags?: string[] | null
+          total_seats?: number
+          updated_at?: string
+          vehicle_id?: string
+          window_seat_extra?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "packages_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "package_routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "packages_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "package_vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pickup_points: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
       pricing_config: {
         Row: {
           base_fare: number
@@ -197,6 +571,42 @@ export type Database = {
           vehicle_type?: string
         }
         Relationships: []
+      }
+      route_pickup_points: {
+        Row: {
+          id: string
+          pickup_point_id: string
+          route_id: string
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          pickup_point_id: string
+          route_id: string
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          pickup_point_id?: string
+          route_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_pickup_points_pickup_point_id_fkey"
+            columns: ["pickup_point_id"]
+            isOneToOne: false
+            referencedRelation: "pickup_points"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_pickup_points_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "package_routes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       trips: {
         Row: {
@@ -307,6 +717,15 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       driver_status: "pending" | "approved" | "rejected"
+      package_booking_status:
+        | "pending"
+        | "confirmed"
+        | "cancelled"
+        | "completed"
+      package_payment_status: "pending" | "partial" | "paid" | "refunded"
+      package_vehicle_type: "sedan" | "premium_suv" | "tempo_traveller"
+      seat_status: "available" | "booked" | "blocked" | "selected"
+      seat_type: "window" | "middle" | "aisle" | "driver"
       trip_status: "assigned" | "in_progress" | "completed" | "cancelled"
     }
     CompositeTypes: {
@@ -437,6 +856,16 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       driver_status: ["pending", "approved", "rejected"],
+      package_booking_status: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+      ],
+      package_payment_status: ["pending", "partial", "paid", "refunded"],
+      package_vehicle_type: ["sedan", "premium_suv", "tempo_traveller"],
+      seat_status: ["available", "booked", "blocked", "selected"],
+      seat_type: ["window", "middle", "aisle", "driver"],
       trip_status: ["assigned", "in_progress", "completed", "cancelled"],
     },
   },
