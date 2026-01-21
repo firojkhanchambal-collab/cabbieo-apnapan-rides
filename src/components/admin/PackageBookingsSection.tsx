@@ -272,7 +272,7 @@ export const PackageBookingsSection = () => {
                   <TableCell>
                     <Select
                       value={booking.booking_status}
-                      onValueChange={(v) => updateBookingStatus(booking.id, v)}
+                      onValueChange={(v) => updateBookingStatus(booking.id, v as "pending" | "confirmed" | "cancelled" | "completed")}
                     >
                       <SelectTrigger className={`w-[120px] h-8 ${statusColors[booking.booking_status]}`}>
                         <SelectValue />
