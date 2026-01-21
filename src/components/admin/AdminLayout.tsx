@@ -1,25 +1,33 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, BookOpen, Users, Menu, DollarSign } from "lucide-react";
+import { LogOut, BookOpen, Users, Menu, DollarSign, Route, MapPin, Bus, Package, Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { BookingsSection } from "./BookingsSection";
 import { DriversSection } from "./DriversSection";
 import PricingSection from "./PricingSection";
+import { PackageRoutesSection } from "./PackageRoutesSection";
+import { PickupPointsSection } from "./PickupPointsSection";
+import { PackageVehiclesSection } from "./PackageVehiclesSection";
+import { PackagesSection } from "./PackagesSection";
+import { PackageBookingsSection } from "./PackageBookingsSection";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+
+type TabType = "bookings" | "drivers" | "pricing" | "pkg-routes" | "pkg-pickup" | "pkg-vehicles" | "pkg-packages" | "pkg-bookings";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAdmin, loading } = useAdminCheck();
-  const [activeTab, setActiveTab] = useState<"bookings" | "drivers" | "pricing">(
-    location.state?.section || "bookings"
+  const [activeTab, setActiveTab] = useState<TabType>(
+    (location.state?.section as TabType) || "bookings"
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -45,10 +53,18 @@ const AdminLayout = () => {
     navigate("/admin/login");
   };
 
-  const navItems = [
-    { id: "bookings" as const, label: "Bookings", icon: BookOpen },
+  const cabBookingItems = [
+    { id: "bookings" as const, label: "Cab Bookings", icon: BookOpen },
     { id: "drivers" as const, label: "Drivers", icon: Users },
     { id: "pricing" as const, label: "Pricing", icon: DollarSign },
+  ];
+
+  const packageItems = [
+    { id: "pkg-routes" as const, label: "Routes", icon: Route },
+    { id: "pkg-pickup" as const, label: "Pickup Points", icon: MapPin },
+    { id: "pkg-vehicles" as const, label: "Vehicles", icon: Bus },
+    { id: "pkg-packages" as const, label: "Packages", icon: Package },
+    { id: "pkg-bookings" as const, label: "Package Bookings", icon: Ticket },
   ];
 
   const Sidebar = () => (
@@ -58,8 +74,36 @@ const AdminLayout = () => {
         <p className="text-sm text-muted-foreground mt-1">Control Panel</p>
       </div>
 
-      <nav className="flex-1 p-4 space-y-2">
-        {navItems.map((item) => {
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        {/* Cab Booking Section */}
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+          🚕 Cab Booking
+        </p>
+        {cabBookingItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Button
+              key={item.id}
+              variant={activeTab === item.id ? "default" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => {
+                setActiveTab(item.id);
+                setMobileMenuOpen(false);
+              }}
+            >
+              <Icon className="w-4 h-4 mr-2" />
+              {item.label}
+            </Button>
+          );
+        })}
+
+        <Separator className="my-4" />
+
+        {/* Package Booking Section */}
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+          🪑 Package Seats
+        </p>
+        {packageItems.map((item) => {
           const Icon = item.icon;
           return (
             <Button
@@ -91,6 +135,29 @@ const AdminLayout = () => {
     </div>
   );
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case "bookings":
+        return <BookingsSection />;
+      case "drivers":
+        return <DriversSection />;
+      case "pricing":
+        return <PricingSection />;
+      case "pkg-routes":
+        return <PackageRoutesSection />;
+      case "pkg-pickup":
+        return <PickupPointsSection />;
+      case "pkg-vehicles":
+        return <PackageVehiclesSection />;
+      case "pkg-packages":
+        return <PackagesSection />;
+      case "pkg-bookings":
+        return <PackageBookingsSection />;
+      default:
+        return <BookingsSection />;
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       {/* Desktop Sidebar */}
@@ -116,9 +183,7 @@ const AdminLayout = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pt-16 md:pt-0">
         <div className="container mx-auto p-6">
-          {activeTab === "bookings" && <BookingsSection />}
-          {activeTab === "drivers" && <DriversSection />}
-          {activeTab === "pricing" && <PricingSection />}
+          {renderContent()}
         </div>
       </main>
     </div>
